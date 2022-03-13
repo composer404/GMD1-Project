@@ -15,7 +15,16 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Jump",
+                    "name": "LongJump",
+                    "type": "Button",
+                    "id": "1b84634e-1dbe-4e71-b554-c787a5d2f4bd",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ShortJump",
                     "type": "Button",
                     "id": "85f0e55d-fb39-4309-8faa-8c83d8415994",
                     "expectedControlType": "Button",
@@ -24,9 +33,36 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "PickUp",
+                    "name": "Pickup",
                     "type": "Button",
                     "id": "057d31c7-bc1c-443b-b1e1-1f0e81247430",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ShortAttack",
+                    "type": "Button",
+                    "id": "cdd8c148-470c-4cb6-ad9d-c1c43a11f6a8",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Run",
+                    "type": "Button",
+                    "id": "18a708dc-6c77-47f8-85f3-483c402524bb",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Drop",
+                    "type": "Button",
+                    "id": "186f3b41-c3c4-41fc-a56c-f5f10a9b41be",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -173,29 +209,62 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "119a7f7a-c567-4783-ba62-c1428ff0ad8a",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "PickUp",
+                    "action": "ShortJump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
                     "id": "7c413171-2c7f-4739-bba6-7be77e5f3553",
-                    "path": "<Keyboard>/e",
+                    "path": "<Keyboard>/f",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "PickUp",
+                    "action": "Pickup",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "81dd3210-2265-4c8e-ad6f-a4cc3c955dd1",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShortAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3f8fc1d1-6307-48b7-b4a3-6a7671e850d8",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "Press(behavior=2)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Run",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "21326768-b237-49d5-84f8-22eca1612437",
+                    "path": "<Keyboard>/space",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LongJump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dbdcb20d-3ce5-45f2-880c-c1cf2cd2c7e0",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Drop",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
