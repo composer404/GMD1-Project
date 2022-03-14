@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class CollectableController : MonoBehaviour
+public class CollectableController : Collectable
 {
 
     [SerializeField]

@@ -10,6 +10,9 @@ public class PlayerController : MonoBehaviour
     private GameObject Hand;
 
     [SerializeField]
+    private GameObject UI;
+
+    [SerializeField]
     private int maxHealth = 100;
 
     [SerializeField]
@@ -32,28 +35,34 @@ public class PlayerController : MonoBehaviour
 
     private float currentRotation;
 
+    /* ---------------------- CURRENT GAME OBJECT ELEMENTS ---------------------- */
+
     private Rigidbody rb;
     private Animator animator;
     private Vector3 movementDirection;
     
+    /* ---------------------------- BOOLEAN VARAIBLES --------------------------- */
+
     private bool isShortJump;
     private bool isPickup;
 
+    /* ----------------------- CONTROLERS OF GAME OBJECTS ----------------------- */
+
     private CollectableController collectableInArea;
     private CollectableController activeItemInHand;
+    private UserInterfaceController userInterfaceController;
 
     void Start() {
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
+        userInterfaceController = UI.GetComponent<UserInterfaceController>();
     }
 
-
-
     void Update() {
-        // if (isShortJump) {
-        //     rb.AddForce(Vector3.up * (isShortJump ? shortJumpSpeed : longJumpSpeed));
-        //     isShortJump = false;
-        // }
+        if (isShortJump) {
+            rb.AddForce(Vector3.up * (isShortJump ? shortJumpSpeed : longJumpSpeed));
+            isShortJump = false;
+        }
 
         if (collectableInArea && isPickup) {
             animator.SetTrigger("PickUp");
@@ -117,12 +126,12 @@ public class PlayerController : MonoBehaviour
     }
 
     void OnShortJump() {
-        // isShortJump = true;
-        // animator.SetTrigger("ShortJump");
+        isShortJump = true;
+        animator.SetTrigger("ShortJump");
     }
 
     void OnShortAttack() {
-        // animator.SetTrigger("ShortAttack");
+        animator.SetTrigger("ShortAttack");
     }
 
     void OnPickup() {
@@ -145,7 +154,7 @@ public class PlayerController : MonoBehaviour
 
 
     /* -------------------------------------------------------------------------- */
-    /*                               INVOCES METHODS                              */
+    /*                               INVOCE METHODS                               */
     /* -------------------------------------------------------------------------- */
 
     private void PlaceItemOnGround() {
@@ -169,12 +178,14 @@ public class PlayerController : MonoBehaviour
         CollectableController collectable = other.GetComponent<CollectableController>();
 
         if(collectable != null) {
+            userInterfaceController.OpenMessageInfoBox(collectable.GetInteractionText());
             collectableInArea = collectable;
         }
     }
 
     private void OnTriggerExit(Collider other) {
         if (collectableInArea != null) {
+            userInterfaceController.CloseMessageInfoBox();
             collectableInArea = null;
         }
     }
