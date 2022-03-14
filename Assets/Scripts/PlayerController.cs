@@ -7,7 +7,10 @@ using ScriptManagement;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField]
-    private GameObject Hand;
+    private GameObject rightHand;
+
+    [SerializeField]
+    private GameObject leftHand;
 
     [SerializeField]
     private GameObject UI;
@@ -48,8 +51,9 @@ public class PlayerController : MonoBehaviour
 
     /* ----------------------- CONTROLERS OF GAME OBJECTS ----------------------- */
 
-    private CollectableController collectableInArea;
-    private CollectableController activeItemInHand;
+    private Collectable collectableInArea;
+    private Collectable activeItemInHandRight;
+    private Collectable activeItemInHandLeft;
     private UserInterfaceController userInterfaceController;
 
     void Start() {
@@ -131,7 +135,27 @@ public class PlayerController : MonoBehaviour
     }
 
     void OnShortAttack() {
-        animator.SetTrigger("ShortAttack");
+        GameObject activeItem = GetActiveElementInRightHand();
+        if (activeItem) {
+            CollectableTypes type = activeItem.GetComponent<Collectable>().GetCollectableType();
+
+            if (type == CollectableTypes.WEAPON) {
+                animator.SetTrigger("ShortAttack");
+                //TODO Attack Logic
+            }
+        }
+    }
+
+    void OnHeal() {
+        GameObject activeItem = GetActiveElementInLeftHand();
+        if (activeItem) {
+            CollectableTypes type = activeItem.GetComponent<Collectable>().GetCollectableType();
+            if (type == CollectableTypes.POTION) {
+                    print("Use potion");
+                    animator.SetTrigger("UsePotion");
+                    //TODO Potion logic
+            }
+        }
     }
 
     void OnPickup() {
@@ -142,7 +166,7 @@ public class PlayerController : MonoBehaviour
     }
 
     void OnDrop() {
-        GameObject activeItem = (activeItemInHand as MonoBehaviour).gameObject;
+        GameObject activeItem = GetActiveElementInRightHand();
 
         if (activeItem) {
             Rigidbody itemRb = activeItem.AddComponent<Rigidbody>();
@@ -158,14 +182,20 @@ public class PlayerController : MonoBehaviour
     /* -------------------------------------------------------------------------- */
 
     private void PlaceItemOnGround() {
-        Destroy((activeItemInHand as MonoBehaviour).GetComponent<Rigidbody>());
-        activeItemInHand.transform.parent = null;
-        activeItemInHand = null;
+        Destroy((activeItemInHandRight as MonoBehaviour).GetComponent<Rigidbody>());
+        activeItemInHandRight.transform.parent = null;
+        activeItemInHandRight = null;
     }
 
     private void PickupItemAfterAnimation() {
         collectableInArea.OnPickup();
-        SetItemActive();
+        if (collectableInArea.GetCollectPlace() == CollectPlaces.RIGHT_HAND) {
+            SetItemActive(rightHand, CollectPlaces.RIGHT_HAND);
+        }
+
+        if (collectableInArea.GetCollectPlace() == CollectPlaces.LEFT_HAND) {
+            SetItemActive(leftHand, CollectPlaces.LEFT_HAND);
+        }
         collectableInArea.OnActive();
     }
 
@@ -175,7 +205,7 @@ public class PlayerController : MonoBehaviour
     /* -------------------------------------------------------------------------- */
 
     private void OnTriggerEnter(Collider other) {
-        CollectableController collectable = other.GetComponent<CollectableController>();
+        Collectable collectable = other.GetComponent<Collectable>();
 
         if(collectable != null) {
             userInterfaceController.OpenMessageInfoBox(collectable.GetInteractionText());
@@ -195,12 +225,25 @@ public class PlayerController : MonoBehaviour
     /* -------------------------------------------------------------------------- */
 
 
-    private void SetItemActive()
+    private void SetItemActive(GameObject hand, CollectPlaces place)
     {
         GameObject activeItem = (collectableInArea as MonoBehaviour).gameObject;
         activeItem.SetActive(true);
-        activeItem.transform.parent = Hand.transform;
-        activeItemInHand = collectableInArea;
+        activeItem.transform.parent = hand.transform;
+
+        if (place == CollectPlaces.LEFT_HAND) {
+            activeItemInHandLeft = collectableInArea;
+            return;
+        }
+        activeItemInHandRight = collectableInArea;
+    }
+
+    private GameObject GetActiveElementInRightHand() {
+        return (activeItemInHandRight as MonoBehaviour).gameObject;
+    }
+
+    private GameObject GetActiveElementInLeftHand() {
+        return (activeItemInHandLeft as MonoBehaviour).gameObject;
     }
 }
 
