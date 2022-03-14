@@ -2,17 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class CollectableController : MonoBehaviour
+public class CollectableController : Collectable
 {
-
-    [SerializeField]
-    private Vector3 activePostion;
-    
-    [SerializeField]
-    private Vector3 activeRotation;
-
-    [SerializeField]
-    private Vector3 activeScale;
 
     [SerializeField]
     private Vector3 dropRotation;
@@ -27,17 +18,4 @@ public class CollectableController : MonoBehaviour
             gameObject.transform.eulerAngles = dropRotation;
         }
     }
-
-    public void OnPickup() {
-        Destroy(gameObject.GetComponent<Rigidbody>());
-        gameObject.SetActive(false);
-    }
-
-    public void OnActive() {
-        transform.localPosition = activePostion;
-        transform.localEulerAngles = activeRotation;
-        transform.localScale = activeScale;
-    }
-
-
 }
