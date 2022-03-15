@@ -137,11 +137,15 @@ public class PlayerController : MonoBehaviour
     void OnShortAttack() {
         GameObject activeItem = GetActiveElementInRightHand();
         if (activeItem) {
-            CollectableTypes type = activeItem.GetComponent<Collectable>().GetCollectableType();
+            Collectable collectable = activeItem.GetComponent<Collectable>();
 
-            if (type == CollectableTypes.WEAPON) {
+            if (collectable.GetCollectableType() == CollectableTypes.WEAPON) {
                 animator.SetTrigger("ShortAttack");
                 //TODO Attack Logic
+            }
+
+            if (collectable.GetCollectableType() == CollectableTypes.COIN) {
+                (collectable as CoinController).Throw(transform);
             }
         }
     }
@@ -151,15 +155,16 @@ public class PlayerController : MonoBehaviour
         if (activeItem) {
             CollectableTypes type = activeItem.GetComponent<Collectable>().GetCollectableType();
             if (type == CollectableTypes.POTION) {
-                    print("Use potion");
-                    animator.SetTrigger("UsePotion");
-                    //TODO Potion logic
+
+                animator.SetTrigger("UsePotion");
+                //TODO Potion logic
             }
         }
     }
 
     void OnPickup() {
         if (collectableInArea != null) {
+            userInterfaceController.CloseMessageInfoBox();
             animator.SetTrigger("PickUp");
             Invoke("PickupItemAfterAnimation", 1f);
         }

@@ -3,6 +3,7 @@ using UnityEngine;
 public enum CollectableTypes {
     WEAPON,
     POTION,
+    COIN,
 }
 
 public enum CollectPlaces {
