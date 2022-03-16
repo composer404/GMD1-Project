@@ -52,4 +52,8 @@ public class Collectable : MonoBehaviour {
         transform.localEulerAngles = activeRotation;
         transform.localScale = activeScale;
     }
+
+    public void SimulateMove(Vector3 moveVector) {        
+         gameObject.GetComponent<Rigidbody>().AddForce(moveVector, ForceMode.Impulse);
+    }
 }

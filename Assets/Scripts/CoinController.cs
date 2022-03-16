@@ -12,7 +12,9 @@ public class CoinController : Collectable
 
         transform.parent = null;
         Rigidbody rb = gameObject.AddComponent<Rigidbody>();
+        TrajectoryController trajectoryController = gameObject.GetComponent<TrajectoryController>();
 
+        trajectoryController.SimulateTrajectory(this, transform.position, (playerTransform.forward + Vector3.up) * throwSpeed);
         rb.AddForce((playerTransform.forward + Vector3.up) * throwSpeed, ForceMode.Impulse);
     }
 }
