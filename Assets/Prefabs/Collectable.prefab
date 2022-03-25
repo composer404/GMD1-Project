@@ -11,11 +11,12 @@ GameObject:
   - component: {fileID: 3271068408458227235}
   - component: {fileID: 3271068408458227234}
   - component: {fileID: 3271068408458227237}
-  - component: {fileID: 3271068408458227236}
-  - component: {fileID: 6359131078362714540}
+  - component: {fileID: 1113230067163433646}
+  - component: {fileID: -8012173485731867666}
+  - component: {fileID: 7163467662630893638}
   m_Layer: 0
   m_Name: Collectable
-  m_TagString: Untagged
+  m_TagString: Coin
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -29,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 3271068408458227238}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -83,20 +84,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &3271068408458227236
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3271068408458227238}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 2.27, y: 2.17, z: 2.68}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6359131078362714540
+--- !u!114 &1113230067163433646
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -105,9 +93,41 @@ MonoBehaviour:
   m_GameObject: {fileID: 3271068408458227238}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb76e273e39d6e342b5ea00b49a22445, type: 3}
+  m_Script: {fileID: 11500000, guid: 4b824da01440886498b1bde9d13aa0bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  activePostion: {x: -0.02256012, y: 0, z: 0}
+  interactionText: Press F to pickup
+  collectableType: 2
+  collectPlace: 0
+  activePostion: {x: 0, y: 0, z: 0}
   activeRotation: {x: 0, y: 0, z: 0}
   activeScale: {x: 20, y: 20, z: 20}
+  throwSpeed: 8
+--- !u!136 &-8012173485731867666
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3271068408458227238}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7163467662630893638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3271068408458227238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0ee1b5a179775c4da61c877bdbfb9bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lineRenderer: {fileID: 0}
+  lineSegments: 20
