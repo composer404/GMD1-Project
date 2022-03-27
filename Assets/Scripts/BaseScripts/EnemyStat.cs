@@ -20,7 +20,7 @@ public class EnemyStat : MonoBehaviour
         return damage;
     }
 
-    public void GetDamage(int damage) {
+    public void GetHit(int damage) {
         health -= damage;
     }
 }
