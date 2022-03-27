@@ -47,6 +47,7 @@ public class PlayerController : MonoBehaviour
     private bool isShortJump;
     private bool isPickup;
     private bool isAttacked;
+    private bool isAttacking;
     private bool isNotGrounded;
 
     /* ----------------------- CONTROLERS OF GAME OBJECTS ----------------------- */
@@ -66,7 +67,7 @@ public class PlayerController : MonoBehaviour
 
     void Update() {
         if (isShortJump) {
-            rb.AddForce(Physics.gravity * (shortJumpSpeed - 1) * rb.mass);
+            rb.AddForce(Vector3.up * shortJumpSpeed, ForceMode.Impulse);
             isShortJump = false;
         }
 
@@ -79,27 +80,25 @@ public class PlayerController : MonoBehaviour
         bool isRunning = animator.GetBool("Run");
         bool isWalking = animator.GetBool("Walk");
 
-        if (!isNotGrounded) {
-            if (movementDirection == Vector3.zero) {
-                if (isWalking) {
-                    animator.SetBool("Walk", false);
-                }
-
-                if (isRunning) {
-                    animator.SetBool("Run", false);
-                }
-                return;
+        if (movementDirection == Vector3.zero) {
+            if (isWalking) {
+                animator.SetBool("Walk", false);
             }
 
-
-            // Smooth character rotation when dirction chagnes
-
-            float targetAngle = Mathf.Atan2(movementDirection.x, movementDirection.z) * Mathf.Rad2Deg;
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref currentRotation, turnSmooth);
-            
-            rb.MovePosition(rb.position + movementDirection * (animator.GetBool("Run") ? runSpeed : walkSpeed) * Time.fixedDeltaTime);
-            rb.MoveRotation(Quaternion.Euler(0f, angle, 0f));
+            if (isRunning) {
+                animator.SetBool("Run", false);
+            }
+            return;
         }
+
+
+        // Smooth character rotation when dirction chagnes
+
+        float targetAngle = Mathf.Atan2(movementDirection.x, movementDirection.z) * Mathf.Rad2Deg;
+        float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref currentRotation, turnSmooth);
+        
+        rb.MovePosition(rb.position + movementDirection * (animator.GetBool("Run") ? runSpeed : walkSpeed) * Time.fixedDeltaTime);
+        rb.MoveRotation(Quaternion.Euler(0f, angle, 0f));
     }
    
     /* -------------------------------------------------------------------------- */
@@ -136,21 +135,27 @@ public class PlayerController : MonoBehaviour
     }
 
     void OnShortJump() {
-        if (!isNotGrounded) {
+        // if (!isNotGrounded) {
             isNotGrounded = true;
             isShortJump = true;
             animator.SetTrigger("ShortJump");
-        }
+        // }
     }
 
     void OnShortAttack() {
+        print("short attack");
         GameObject activeItem = GetActiveElementInRightHand();
         if (activeItem) {
             Collectable collectable = activeItem.GetComponent<Collectable>();
 
             if (collectable.GetCollectableType() == CollectableTypes.WEAPON) {
                 animator.SetTrigger("ShortAttack");
-                //TODO Attack Logic
+                WeaponController weaponController = activeItem.GetComponent<WeaponController>();
+                if (weaponController == null) {
+                    return;
+                }   
+
+                StartCoroutine(weaponController.Attack());
             }
 
             if (collectable.GetCollectableType() == CollectableTypes.COIN) {
@@ -172,7 +177,7 @@ public class PlayerController : MonoBehaviour
     }
 
     public IEnumerator GetHit(int damage) {
-        if(!isAttacked) {
+        if(!isAttacked && !IsAttacking()) {
             isAttacked = true;
             yield return new WaitForSeconds(0.25f);
             playerStat.GetDamage(damage);
@@ -187,6 +192,19 @@ public class PlayerController : MonoBehaviour
             isAttacked = false;
         }
         
+    }
+
+    private bool IsAttacking() {
+        if (activeItemInHandRight == null) {
+            return false;
+        }
+
+        WeaponController controller = activeItemInHandRight.GetComponent<WeaponController>();
+        if (controller == null) {
+            return false;
+        }
+
+        return controller.GetAttackState();
     }
 
     private bool IsDead() {
@@ -221,6 +239,7 @@ public class PlayerController : MonoBehaviour
     /* -------------------------------------------------------------------------- */
 
     private void PlaceItemOnGround() {
+        activeItemInHandRight.GetComponent<BoxCollider>().enabled = true;
         Destroy((activeItemInHandRight as MonoBehaviour).GetComponent<Rigidbody>());
         activeItemInHandRight.transform.parent = null;
         activeItemInHandRight = null;
@@ -275,6 +294,7 @@ public class PlayerController : MonoBehaviour
         GameObject activeItem = (collectableInArea as MonoBehaviour).gameObject;
         activeItem.SetActive(true);
         activeItem.transform.parent = hand.transform;
+        activeItem.GetComponent<BoxCollider>().enabled = false;
 
         if (place == CollectPlaces.LEFT_HAND) {
             activeItemInHandLeft = collectableInArea;

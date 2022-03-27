@@ -14,6 +14,9 @@ public class EnemyController : MonoBehaviour
     [SerializeField]
     private float attackZoneRadius = 2f;
 
+    [SerializeField]
+    private HealthBarController healthBar;
+
     private Transform player;
     private NavMeshAgent agent;
     private Animator animator;
@@ -27,6 +30,7 @@ public class EnemyController : MonoBehaviour
         animator = gameObject.GetComponent<Animator>();
         agent = gameObject.GetComponent<NavMeshAgent>();
         enemyStat = gameObject.GetComponent<EnemyStat>();
+        healthBar.SetHealth(enemyStat.GetHealth());
     }
 
     void Update() {
@@ -48,10 +52,14 @@ public class EnemyController : MonoBehaviour
             Stop();
             Rotate();
         }
+    }
 
-        // if (distance > visibleZoneRadius) {
-        //     Stop();
-        // }
+    /* ---------------------------- Public functions ---------------------------- */
+
+    public void GetDamage(int damage) {
+        enemyStat.GetHit(damage);
+        healthBar.SetHealth(enemyStat.GetHealth());
+        StartCoroutine(IsDead());
     }
 
     /* ------------------------------ Enemy states ------------------------------ */
@@ -65,9 +73,11 @@ public class EnemyController : MonoBehaviour
             float randomZ = Random.Range(-walkZoneRadius, walkZoneRadius);
             float randomX = Random.Range(-walkZoneRadius, walkZoneRadius);
 
-            walkDestination = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.x + randomZ);
+            walkDestination = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
             NavMeshHit hit;
-            if (NavMesh.SamplePosition(walkDestination, out hit, 1f, NavMesh.AllAreas)) {
+            print(walkDestination);
+            NavMeshPath navMeshPath = new NavMeshPath();
+            if (NavMesh.SamplePosition(walkDestination, out hit, 1f, NavMesh.AllAreas) && agent.CalculatePath(walkDestination, navMeshPath) && navMeshPath.status == NavMeshPathStatus.PathComplete) {
                 walkDestination = hit.position;
                 isDestination = true;
             }
@@ -102,7 +112,7 @@ public class EnemyController : MonoBehaviour
         this.animator.SetTrigger("Attack 01");
     }
 
-    void OnTriggerEnter(Collider other) {
+    private void OnTriggerEnter(Collider other) {
         print(other.gameObject.tag);
         if (other.gameObject.tag == "Player") {
             attackedObject = other.gameObject;
@@ -110,7 +120,7 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    void OnTriggerExit(Collider other) {
+    private void OnTriggerExit() {
         CancelInvoke("AttackInLoop");
     }
 
@@ -138,6 +148,15 @@ public class EnemyController : MonoBehaviour
         PlayerController controller = attackedObject.GetComponent<PlayerController>();
         if (controller != null) {
             StartCoroutine(controller.GetHit(enemyStat.GetDamage()));
+        }
+    }
+
+    private IEnumerator IsDead() {
+        if (enemyStat.GetHealth() <= 0) {
+            // Destroy(this);
+            animator.SetTrigger("Die");
+            yield return new WaitForSeconds(2f);
+            Destroy(gameObject);
         }
     }
 }
