@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class Billboard : MonoBehaviour
 {
-    [SerializeField]
-    private Transform camera;
+    private GameObject mainCamera;
+
+    void Start() {
+        mainCamera = CameraManger.GetInstance().GetMainCamera();
+    }
 
     void LateUpdate() {
-        transform.LookAt(transform.position + camera.forward);
+        transform.LookAt(transform.position + mainCamera.transform.forward);
     }
 }

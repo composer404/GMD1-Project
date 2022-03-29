@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - Poison Flower
+  - Ground
+  - Enemy
+  - Coin
+  - InGameUI
   layers:
   - Default
   - TransparentFX
