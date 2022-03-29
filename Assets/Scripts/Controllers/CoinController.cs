@@ -2,19 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CoinController : Collectable
+public class CoinController : MonoBehaviour
 {
     [SerializeField]
-    private float throwSpeed = 8;
+    private int points = 10;
+    
+    private PointManager pointManager;
 
-    public void Throw(Transform playerTransform) {
-        print("Throw");
+    void Start() {
+        pointManager = PointManager.GetInstance();
+    }
 
-        transform.parent = null;
-        Rigidbody rb = gameObject.AddComponent<Rigidbody>();
-        TrajectoryController trajectoryController = gameObject.GetComponent<TrajectoryController>();
+    private void OnTriggerEnter(Collider other) {
+        if (other.gameObject.tag == "Player") {
+            PickUp();
+        }
+    }
 
-        trajectoryController.SimulateTrajectory(this, transform.position, (playerTransform.forward + Vector3.up) * throwSpeed);
-        rb.AddForce((playerTransform.forward + Vector3.up) * throwSpeed, ForceMode.Impulse);
+    private void PickUp() {
+        pointManager.AddPoints(points);
+        Destroy(gameObject);
     }
 }

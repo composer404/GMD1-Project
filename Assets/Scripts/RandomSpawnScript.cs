@@ -10,16 +10,17 @@ using Random = UnityEngine.Random;
 public class RandomSpawnScript : MonoBehaviour
 {
  //[SerializeField] private GameObject spawnPrefab;
- [SerializeField] private GameObject enemyObject;
+ [SerializeField] private GameObject prefabObject;
  [SerializeField] private float xPos;
  [SerializeField] private float zPos;
- [SerializeField] private int enemyCount;
+ [SerializeField] private int count;
+ [SerializeField] private float delayTime = 2f;
 
- [SerializeField] private GameObject poisonFlower;
- [SerializeField] private int flowerCount;
+//  [SerializeField] private GameObject poisonFlower;
+//  [SerializeField] private int flowerCount;
 
- [SerializeField] private GameObject collectableObject;
- [SerializeField] private int collectableCount;
+//  [SerializeField] private GameObject collectableObject;
+//  [SerializeField] private int collectableCount;
  
  
 // [SerializeField] private GameObject enemy1Prefab;
@@ -48,51 +49,51 @@ public class RandomSpawnScript : MonoBehaviour
   //Instantiate(enemy1Prefab, randomSpawnposition1, Quaternion.identity);
   
  // SpawnObject();
- StartCoroutine(EnemyDrop());
- StartCoroutine(FlowerDrop());
- StartCoroutine(CollectableDrop());
+ StartCoroutine(PrefabDrop());
+//  StartCoroutine(FlowerDrop());
+//  StartCoroutine(CollectableDrop());
  }
 
  
  // Drops enemies after a certain amount of time randomly
- IEnumerator EnemyDrop()
+ IEnumerator PrefabDrop()
  {
-  while (enemyCount < 10)
+  while(count < 10)
   {
    xPos = Random.Range(-30, 30);
    zPos = Random.Range(-23, 29);
-   Instantiate(enemyObject, new Vector3(xPos, 0, zPos), Quaternion.identity);
-   yield return new WaitForSeconds(2f);
-   enemyCount += 1;
+   Instantiate(prefabObject, new Vector3(xPos, 0, zPos), Quaternion.identity);
+   yield return new WaitForSeconds(delayTime);
+    count += 1;
 
   }
  }
 
- IEnumerator FlowerDrop()
- {
-  while (flowerCount < 20)
-  {
-   xPos = Random.Range(-20, 20);
-   zPos = Random.Range(-20, 20);
-   Instantiate(poisonFlower, new Vector3(xPos, 0, zPos), Quaternion.identity);
-   yield return new WaitForSeconds(0.1f);
-   flowerCount += 1;
+//  IEnumerator FlowerDrop()
+//  {
+//   while (flowerCount < 20)
+//   {
+//    xPos = Random.Range(-20, 20);
+//    zPos = Random.Range(-20, 20);
+//    Instantiate(poisonFlower, new Vector3(xPos, 0, zPos), Quaternion.identity);
+//    yield return new WaitForSeconds(0.1f);
+//    flowerCount += 1;
 
-  }
- }
+//   }
+//  }
 
- IEnumerator CollectableDrop()
-  {
-   while (collectableCount < 5)
-   {
-    xPos = Random.Range(-20, 20);
-    zPos = Random.Range(-20, 20);
-    Instantiate(collectableObject, new Vector3(xPos, 0, zPos), Quaternion.identity);
-    yield return new WaitForSeconds(0.0f);
-    collectableCount += 1;
+//  IEnumerator CollectableDrop()
+//   {
+//    while (collectableCount < 5)
+//    {
+//     xPos = Random.Range(-20, 20);
+//     zPos = Random.Range(-20, 20);
+//     Instantiate(collectableObject, new Vector3(xPos, 0, zPos), Quaternion.identity);
+//     yield return new WaitForSeconds(0.0f);
+//     collectableCount += 1;
 
-   }
-  }
+//    }
+//   }
  
 
  // public void SpawnObject()
