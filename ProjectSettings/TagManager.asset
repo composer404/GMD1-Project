@@ -4,11 +4,7 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - PlaceToCollect
-  - Coin
-  - PointsUIBox
-  - Enemy
-  - Ground
+  - Poison Flower
   layers:
   - Default
   - TransparentFX
