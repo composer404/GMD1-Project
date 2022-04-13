@@ -180,8 +180,8 @@ public class PlayerController : MonoBehaviour
             healthBarController.SetHealth(playerStat.GetHealth());
             if (IsDead()) {
                 animator.SetTrigger("Dead");
-                Destroy(this);
-                //! Game over;
+                // Destroy(this);
+                GameStateManager.GetInstance().GameOver();
                 yield return null;
             }
             animator.SetTrigger("Hit");

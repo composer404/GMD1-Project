@@ -83,13 +83,17 @@ public class EnemyController : MonoBehaviour
             }
             return;
         }
+        agent.speed = 5;
+        animator.SetBool("Run Forward", false);
         animator.SetBool("Walk Forward", true);
         agent.SetDestination(walkDestination);
     }
 
     private void Follow() {
+        agent.speed = 10;
         agent.SetDestination(player.position);
-        animator.SetBool("Walk Forward", true);
+        animator.SetBool("Walk Forward", false);
+        animator.SetBool("Run Forward", true);
     }
 
     private void Notice() {
@@ -99,10 +103,12 @@ public class EnemyController : MonoBehaviour
     private void Stop() {
         agent.SetDestination(transform.position);
         animator.SetBool("Walk Forward", false);
+        animator.SetBool("Run Forward", false);
     }
 
     private void Rotate() {
         animator.SetBool("Walk Forward", false);
+        animator.SetBool("Run Forward", false);
         Vector3 direction = (player.position - transform.position).normalized;
         Quaternion rotation = Quaternion.LookRotation(new Vector3(direction.x, 0.0f, direction.z));
         transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 5f);
