@@ -9,6 +9,8 @@ public class PlaceToCollectController : MonoBehaviour
 
     private PointsManager pointsManager;
     private UnityEngine.UI.Text pointsText;
+    private UnityEngine.UI.Text timer;
+
     
     void Start()
     {

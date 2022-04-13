@@ -9,6 +9,8 @@ TagManager:
   - Enemy
   - Coin
   - InGameUI
+  - UsernameInput
+  - Leaderboard
   layers:
   - Default
   - TransparentFX
