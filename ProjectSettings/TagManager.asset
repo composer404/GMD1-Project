@@ -8,7 +8,11 @@ TagManager:
   - Ground
   - Enemy
   - Coin
+<<<<<<< HEAD
   - SpawnPoint
+=======
+  - InGameUI
+>>>>>>> 419812748a27de4c020ffe3a605ab5651698a525
   layers:
   - Default
   - TransparentFX

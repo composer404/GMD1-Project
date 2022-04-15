@@ -157,10 +157,6 @@ public class PlayerController : MonoBehaviour
 
                 StartCoroutine(weaponController.Attack());
             }
-
-            if (collectable.GetCollectableType() == CollectableTypes.COIN) {
-                (collectable as CoinController).Throw(transform);
-            }
         }
     }
 
