@@ -15,7 +15,7 @@ public class RandomSpawnScript : MonoBehaviour
  [SerializeField] private int count;
  [SerializeField] private float delayTime = 2f;
    public Transform prefabToSpawn;
-    // public int objectCount = 50;
+     public int objectCount = 50;
     public float spawnRadius = 5;
     public float spawnCollisionCheckRadius;
 
@@ -63,7 +63,7 @@ void Awake()
 
 IEnumerator PrefabDrop1()
  {
-  while (count <10)
+  while (count <3)
   {
        int spawn = Random.Range(0,spawnLocations.Length);
       for(int loop = 0; loop < count;loop++)
