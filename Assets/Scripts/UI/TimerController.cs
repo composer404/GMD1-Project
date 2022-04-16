@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
-
+using UnityEngine.UI;
 public class TimerController : MonoBehaviour
 {
     #region Singleton
@@ -20,7 +19,7 @@ public class TimerController : MonoBehaviour
     #endregion
 
     [SerializeField]
-    private TMP_Text timerTextBox;
+    private Text timerTextBox;
 
     private float currentTime = 0f;
     private bool isRunning;
@@ -30,8 +29,11 @@ public class TimerController : MonoBehaviour
     }
 
     void Update() {
-        currentTime += Time.deltaTime;
-        timerTextBox.text = string.Format("{0:.##}", currentTime);
+    }
+
+    void FixedUpdate() {
+        currentTime += Time.fixedDeltaTime;
+        timerTextBox.text = string.Format("{0:0.00}", currentTime);
     }
 
     public void StopTimer() {
