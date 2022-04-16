@@ -22,10 +22,17 @@ public class GameStateManager : MonoBehaviour
     [SerializeField]
     private GameObject gameOverScreen;
 
+    [SerializeField]
+    private GameObject gameWinScreen;
+
     public void GameOver() {
         PauseGame();
-        StorageManager.GetInstance().SaveResult();
         gameOverScreen.SetActive(true);
+    }
+
+    public void Win() {
+        PauseGame();
+        gameWinScreen.SetActive(true);
     }
     
     private void PauseGame() {

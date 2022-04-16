@@ -41,6 +41,7 @@ public class MainMenuController : MonoBehaviour
        if (usernameInputField.text != null && !usernameInputField.text.Equals("")) {
             PlayerPrefs.SetString("USERNAME", usernameInputField.text);
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            Time.timeScale = 1;
        } else {
            errorText.SetActive(true);
        }

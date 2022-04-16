@@ -21,17 +21,16 @@ public class StorageManager : MonoBehaviour
 
     private string resultPath = "/ResultData.json";
 
-    public void SaveResult() {
+    public void SaveResult(float result) {
         Results results = ReadResults();
 
         if(results == null) {
             results = new Results();
         }
 
-        float time = TimerController.GetInstance().GetTime();
         string username = PlayerPrefs.GetString("USERNAME");
 
-        ResultData timeToSave = new ResultData(time, username);
+        ResultData timeToSave = new ResultData(result, username);
         results.results.Add(timeToSave);
 
         System.IO.File.WriteAllText(Application.persistentDataPath + resultPath, JsonUtility.ToJson(results));
@@ -48,8 +47,24 @@ public class StorageManager : MonoBehaviour
     }
 
     public Results SortResults(Results results) {
-        List<ResultData> sordeted =  results.results.OrderBy((element) => element.dateTime).ToList();
+        if (results == null) {
+            return null;
+        }
+
+        List<ResultData> sordeted = results.results.OrderBy((element) => element.result).ToList();
+
         results.results = sordeted;
         return results;
     } 
+
+    public float GetBestResult() {
+        Results readResults = ReadResults();
+        Results sortedResults = SortResults(readResults);
+
+        if (readResults == null || sortedResults == null || sortedResults.results[0] == null) {
+            return 0;
+        }
+
+        return sortedResults.results[0].result;
+    }
 }

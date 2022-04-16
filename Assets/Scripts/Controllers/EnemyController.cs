@@ -159,9 +159,9 @@ public class EnemyController : MonoBehaviour
 
     private IEnumerator IsDead() {
         if (enemyStat.GetHealth() <= 0) {
-            // Destroy(this);
+            PointManager.GetInstance().AddKill();
             animator.SetTrigger("Die");
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(1.45f);
             Destroy(gameObject);
         }
     }
