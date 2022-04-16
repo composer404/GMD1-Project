@@ -3,16 +3,7 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags:
-  - Poison Flower
-  - Ground
-  - Enemy
-  - Coin
-<<<<<<< HEAD
-  - SpawnPoint
-=======
-  - InGameUI
->>>>>>> 419812748a27de4c020ffe3a605ab5651698a525
+  tags: []
   layers:
   - Default
   - TransparentFX
