@@ -58,6 +58,7 @@ public class EnemyController : MonoBehaviour
 
     public void GetDamage(int damage) {
         enemyStat.GetHit(damage);
+        Follow();
         healthBar.SetHealth(enemyStat.GetHealth());
         StartCoroutine(IsDead());
     }
@@ -75,7 +76,6 @@ public class EnemyController : MonoBehaviour
 
             walkDestination = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
             NavMeshHit hit;
-            print(walkDestination);
             NavMeshPath navMeshPath = new NavMeshPath();
             if (NavMesh.SamplePosition(walkDestination, out hit, 1f, NavMesh.AllAreas) && agent.CalculatePath(walkDestination, navMeshPath) && navMeshPath.status == NavMeshPathStatus.PathComplete) {
                 walkDestination = hit.position;
@@ -119,7 +119,6 @@ public class EnemyController : MonoBehaviour
     }
 
     private void OnTriggerEnter(Collider other) {
-        print(other.gameObject.tag);
         if (other.gameObject.tag == "Player") {
             attackedObject = other.gameObject;
             InvokeRepeating ("AttackInLoop", 0, 1); 
@@ -160,6 +159,7 @@ public class EnemyController : MonoBehaviour
     private IEnumerator IsDead() {
         if (enemyStat.GetHealth() <= 0) {
             PointManager.GetInstance().AddKill();
+            agent.isStopped = true;
             animator.SetTrigger("Die");
             yield return new WaitForSeconds(1.45f);
             Destroy(gameObject);

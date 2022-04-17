@@ -17,6 +17,10 @@ public class CoinController : MonoBehaviour
         gameStateManager = GameStateManager.GetInstance();
     }
 
+    void Update() {
+        gameObject.transform.Rotate(0, 0, 50 * Time.deltaTime);
+    }
+
     private void OnTriggerEnter(Collider other) {
         if (other.gameObject.tag == "Player") {
             PickUp();
@@ -25,6 +29,7 @@ public class CoinController : MonoBehaviour
     }
 
     private void PickUp() {
+        AudioManager.GetInstance().PlayCoinCollect();
         pointManager.AddPoints(points);
         Destroy(gameObject);
     }

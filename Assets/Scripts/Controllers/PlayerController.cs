@@ -46,9 +46,11 @@ public class PlayerController : MonoBehaviour
 
     private bool isShortJump;
     private bool isPickup;
+    private bool isRunning;
+    private bool isWalking;
     private bool isAttacked;
-    private bool isAttacking;
     private bool isNotGrounded;
+    private bool isRunHold;
 
     /* ----------------------- CONTROLERS OF GAME OBJECTS ----------------------- */
 
@@ -62,7 +64,6 @@ public class PlayerController : MonoBehaviour
         animator = gameObject.GetComponent<Animator>();
         playerStat = gameObject.GetComponent<PlayerStat>();
         userInterfaceController = UI.GetComponent<UserInterfaceController>();
-        healthBarController.SetHealth(playerStat.GetHealth());
     }
 
     void Update() {
@@ -70,16 +71,9 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(Vector3.up * shortJumpSpeed, ForceMode.Impulse);
             isShortJump = false;
         }
-
-        if (collectableInArea && isPickup) {
-            animator.SetTrigger("PickUp");
-        }
     }
 
     void FixedUpdate() {
-        bool isRunning = animator.GetBool("Run");
-        bool isWalking = animator.GetBool("Walk");
-
         if (movementDirection == Vector3.zero) {
             if (isWalking) {
                 animator.SetBool("Walk", false);
@@ -94,11 +88,13 @@ public class PlayerController : MonoBehaviour
 
         // Smooth character rotation when dirction chagnes
 
-        float targetAngle = Mathf.Atan2(movementDirection.x, movementDirection.z) * Mathf.Rad2Deg;
-        float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref currentRotation, turnSmooth);
-        
-        rb.MovePosition(rb.position + movementDirection * (animator.GetBool("Run") ? runSpeed : walkSpeed) * Time.fixedDeltaTime);
-        rb.MoveRotation(Quaternion.Euler(0f, angle, 0f));
+        if (!isPickup || !IsAttacking()) {
+            float targetAngle = Mathf.Atan2(movementDirection.x, movementDirection.z) * Mathf.Rad2Deg;
+            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref currentRotation, turnSmooth);
+            
+            rb.MovePosition(rb.position + movementDirection * (isRunning ? runSpeed : walkSpeed) * Time.fixedDeltaTime);
+            rb.MoveRotation(Quaternion.Euler(0f, angle, 0f));
+        }
     }
    
     /* -------------------------------------------------------------------------- */
@@ -109,53 +105,58 @@ public class PlayerController : MonoBehaviour
         Vector2 movementVector = movement.Get<Vector2>();
         movementDirection = new Vector3(movementVector.x, 0.0f, movementVector.y);
 
-        if (movementDirection == Vector3.zero) {
-            animator.SetBool("Walk", false);
-        } 
-
-        if(!animator.GetBool("Walk") && movementDirection != Vector3.zero) {
+        if (!isRunning) {
             animator.SetBool("Walk", true);
+            isWalking = true;
         }
 
     } 
 
     void OnRun() {
-        if (!isNotGrounded) {
-            bool isRunning = animator.GetBool("Run");
-            bool isWalking = animator.GetBool("Walk");
-
-            if (isWalking) {
-                animator.SetBool("Run", true);
-            }
-
-            if (isRunning) {
-                animator.SetBool("Run", false);
-            }
+        if (movementDirection == Vector3.zero) {
+            return;
         }
+
+        isRunHold = !isRunHold;
+        if(isRunHold) {
+            animator.SetBool("Run", true);
+            animator.SetBool("Walk", false);
+            isRunning = true;
+            isWalking = false;
+            return;
+        }
+        
+        animator.SetBool("Run", false);
+        animator.SetBool("Walk", true);
+        isRunning = false;
+        isWalking = true;
     }
 
     void OnShortJump() {
-        // if (!isNotGrounded) {
+        if (!isNotGrounded) {
             isNotGrounded = true;
             isShortJump = true;
+            // isWalking = false;
+            // isRunning = false;
             animator.SetTrigger("ShortJump");
-        // }
+        }
     }
 
     void OnShortAttack() {
-        print("short attack");
-        GameObject activeItem = GetActiveElementInRightHand();
-        if (activeItem) {
-            Collectable collectable = activeItem.GetComponent<Collectable>();
+        if(!IsAttacking()) {
+            GameObject activeItem = GetActiveElementInRightHand();
 
-            if (collectable.GetCollectableType() == CollectableTypes.WEAPON) {
-                animator.SetTrigger("ShortAttack");
-                WeaponController weaponController = activeItem.GetComponent<WeaponController>();
-                if (weaponController == null) {
-                    return;
-                }   
+            if (activeItem != null) {
+                CollectableTypes collectableType = activeItem.GetComponent<Collectable>().GetCollectableType();
 
-                StartCoroutine(weaponController.Attack());
+                if (collectableType == CollectableTypes.WHITE_WEAPON || collectableType == CollectableTypes.FIRE_WEAPON) {
+                    animator.SetTrigger("ShortAttack");
+                    Weapon weapon = activeItem.GetComponent<Weapon>();
+                    if (weapon == null) {
+                        return;
+                    }   
+                    StartCoroutine(weapon.Attack());
+                }
             }
         }
     }
@@ -195,12 +196,12 @@ public class PlayerController : MonoBehaviour
             return false;
         }
 
-        WeaponController controller = activeItemInHandRight.GetComponent<WeaponController>();
-        if (controller == null) {
+        Weapon weapon = activeItemInHandRight.GetComponent<Weapon>();
+        if (weapon == null) {
             return false;
         }
 
-        return controller.GetAttackState();
+        return weapon.GetAttackState();
     }
 
     private bool IsDead() {
@@ -212,6 +213,7 @@ public class PlayerController : MonoBehaviour
 
     void OnPickup() {
         if (collectableInArea != null) {
+            isPickup = true;
             userInterfaceController.CloseMessageInfoBox();
             animator.SetTrigger("PickUp");
             Invoke("PickupItemAfterAnimation", 1f);
@@ -251,6 +253,20 @@ public class PlayerController : MonoBehaviour
             SetItemActive(leftHand, CollectPlaces.LEFT_HAND);
         }
         collectableInArea.OnActive();
+        isPickup = false;
+    }
+
+    private void OnCollisionEnter() {
+        if(isNotGrounded) {
+            isNotGrounded = false;
+            if (isRunning) {
+                animator.SetBool("Run", true);
+            }
+
+            if (isWalking) {
+                animator.SetBool("Walk", true);
+            }
+        }
     }
 
 
@@ -259,6 +275,10 @@ public class PlayerController : MonoBehaviour
     /* -------------------------------------------------------------------------- */
 
     private void OnTriggerEnter(Collider other) {
+        if (other.gameObject.tag == "Water") {
+            KillPlayer();
+        }
+
         if (other.gameObject.tag == "Ground") {
             if (isNotGrounded == true) {
                 isNotGrounded = false;
@@ -267,7 +287,7 @@ public class PlayerController : MonoBehaviour
 
         Collectable collectable = other.GetComponent<Collectable>();
 
-        if(collectable != null) {
+        if(collectable != null && GetActiveElementInRightHand() == null) {
             userInterfaceController.OpenMessageInfoBox(collectable.GetInteractionText());
             collectableInArea = collectable;
         }
@@ -300,6 +320,9 @@ public class PlayerController : MonoBehaviour
     }
 
     private GameObject GetActiveElementInRightHand() {
+        if (activeItemInHandRight == null) {
+            return null;
+        }
         return (activeItemInHandRight as MonoBehaviour).gameObject;
     }
 
@@ -307,8 +330,8 @@ public class PlayerController : MonoBehaviour
         return (activeItemInHandLeft as MonoBehaviour).gameObject;
     }
 
-    private void ReceiveDamage(GameObject enemy) {
-
+    private void KillPlayer() {
+        StartCoroutine(GetHit(playerStat.GetMaxHealth()));
     }
 }
 
