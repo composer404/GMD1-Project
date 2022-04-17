@@ -2,6 +2,8 @@ using UnityEngine;
 
 public enum CollectableTypes {
     WEAPON,
+    WHITE_WEAPON,
+    FIRE_WEAPON,
     POTION,
     COIN,
 }

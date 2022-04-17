@@ -12,7 +12,7 @@ public class PlayerStat : MonoBehaviour
     private int health;
 
     [SerializeField]
-    private int maxHealth;
+    private int maxHealth = 100;
 
     public int GetHealth() {
         return health;

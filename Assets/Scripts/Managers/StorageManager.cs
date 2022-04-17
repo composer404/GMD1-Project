@@ -51,9 +51,10 @@ public class StorageManager : MonoBehaviour
             return null;
         }
 
-        List<ResultData> sordeted = results.results.OrderBy((element) => element.result).ToList();
-
+        List<ResultData> sordeted = results.results.OrderByDescending((element) => element.result).ToList();
         results.results = sordeted;
+
+        print("Sorteet" + sordeted);
         return results;
     } 
 

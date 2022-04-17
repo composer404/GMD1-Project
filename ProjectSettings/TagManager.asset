@@ -11,6 +11,8 @@ TagManager:
   - InGameUI
   - UsernameInput
   - Leaderboard
+  - Burst
+  - Water
   layers:
   - Default
   - TransparentFX

@@ -55,6 +55,10 @@ public class MainMenuController : MonoBehaviour
        errorText.SetActive(false);
    }
 
+   public void PlayHoverSound() {
+       AudioManager.GetInstance().PlayMenuItemHover();
+   }
+
    public void OpenLeaderboard() {
         leaderboardGameObject.SetActive(true);
         mainMenuGameObject.SetActive(false);
@@ -76,7 +80,6 @@ public class MainMenuController : MonoBehaviour
            if (index > 10) {
                break;
            }
-            print(resultData.dateTime);
             GameObject empty = new GameObject();
             Text text = empty.AddComponent<Text>();
             text.font = font;
@@ -94,7 +97,7 @@ public class MainMenuController : MonoBehaviour
         try{
             string response = System.IO.File.ReadAllText(Application.persistentDataPath + resultPath);
             Results fromFile =  JsonUtility.FromJson<Results>(response);
-            List<ResultData> sordeted =  fromFile.results.OrderBy((element) => element.result).ToList();
+            List<ResultData> sordeted =  fromFile.results.OrderByDescending((element) => element.result).ToList();
 
             fromFile.results = sordeted;
             return fromFile;
