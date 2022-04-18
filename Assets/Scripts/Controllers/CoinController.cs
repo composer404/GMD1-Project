@@ -30,12 +30,13 @@ public class CoinController : MonoBehaviour
 
     private void PickUp() {
         AudioManager.GetInstance().PlayCoinCollect();
+        generalInfoManager.Collect();
         pointManager.AddPoints(points);
         Destroy(gameObject);
     }
 
     private void CheckIfWin() {
-       if (pointManager.GetPoints() >= generalInfoManager.GetPointsToWin()) {
+       if (generalInfoManager.GetCollectablesToWin() <= 0) {
            gameStateManager.Win();
        }
     }

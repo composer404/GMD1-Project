@@ -19,7 +19,7 @@ public class GeneralInfoManager : MonoBehaviour
     #endregion
 
     [SerializeField]
-    private int pointsToWin = 30;
+    private int collectablesToWin = 5;
 
     [SerializeField]
     private int enemiesNumber = 5;
@@ -28,15 +28,14 @@ public class GeneralInfoManager : MonoBehaviour
     private int killPoints = 20;
 
     [SerializeField]
-    private float timeMultiplier = 0.5f;
-
+    private float timeMultiplier = -0.1f;
 
     public int GetEnemiesNumber() {
         return enemiesNumber;
     }
 
-    public int GetPointsToWin() {
-        return pointsToWin;
+    public int GetCollectablesToWin() {
+        return collectablesToWin;
     }
 
     public int GetKillPoints() {
@@ -45,6 +44,10 @@ public class GeneralInfoManager : MonoBehaviour
 
     public float GetTimeMultiplyer() {
         return timeMultiplier;
+    }
+
+    public void Collect() {
+        collectablesToWin--;
     }
 
 }
