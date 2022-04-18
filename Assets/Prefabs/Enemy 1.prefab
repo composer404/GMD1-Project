@@ -201,8 +201,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 400f29c3265e0c74ea7f12ac840820c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkZoneRadius: 30
-  visibleZoneRadius: 20
+  walkZoneRadius: 37.5
+  visibleZoneRadius: 27.8
   attackZoneRadius: 4
   healthBar: {fileID: 490402523984390418}
 --- !u!114 &551344801564219386
@@ -217,7 +217,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43982cda95025dd41a327a53b6805f1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 10
+  damage: 30
   health: 100
 --- !u!195 &551344801564219387
 NavMeshAgent:
@@ -229,8 +229,8 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 5
-  m_Acceleration: 6
+  m_Speed: 10
+  m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0

@@ -110,6 +110,10 @@ public class PlayerController : MonoBehaviour
             isWalking = true;
         }
 
+        if (isRunning) {
+            animator.SetBool("Run", true);
+        }
+
     } 
 
     void OnRun() {
