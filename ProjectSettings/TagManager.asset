@@ -3,7 +3,16 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Poison Flower
+  - Ground
+  - Enemy
+  - Coin
+  - InGameUI
+  - UsernameInput
+  - Leaderboard
+  - Burst
+  - Water
   layers:
   - Default
   - TransparentFX
