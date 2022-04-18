@@ -28,6 +28,12 @@ public class AudioManager : MonoBehaviour
     [SerializeField]
     private AudioSource coin;
 
+    [SerializeField]
+    private AudioSource walk;
+
+    [SerializeField]
+    private AudioSource jump;
+
     public void PlayMenuItemHover() {
         menuItemHover.Play();
     }
@@ -38,6 +44,14 @@ public class AudioManager : MonoBehaviour
 
     public void PlayCoinCollect() {
         coin.Play();
+    }
+
+    public void PlayWalk() {
+        walk.Play();
+    }
+
+    public void PlayJump() {
+        jump.Play();
     }
 
 }
