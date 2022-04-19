@@ -58,6 +58,7 @@ public class EnemyController : MonoBehaviour
 
     public void GetDamage(int damage) {
         enemyStat.GetHit(damage);
+        Follow();
         healthBar.SetHealth(enemyStat.GetHealth());
         StartCoroutine(IsDead());
     }
@@ -75,7 +76,6 @@ public class EnemyController : MonoBehaviour
 
             walkDestination = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
             NavMeshHit hit;
-            print(walkDestination);
             NavMeshPath navMeshPath = new NavMeshPath();
             if (NavMesh.SamplePosition(walkDestination, out hit, 1f, NavMesh.AllAreas) && agent.CalculatePath(walkDestination, navMeshPath) && navMeshPath.status == NavMeshPathStatus.PathComplete) {
                 walkDestination = hit.position;
@@ -83,13 +83,17 @@ public class EnemyController : MonoBehaviour
             }
             return;
         }
+        agent.speed = 5;
+        animator.SetBool("Run Forward", false);
         animator.SetBool("Walk Forward", true);
         agent.SetDestination(walkDestination);
     }
 
     private void Follow() {
+        agent.speed = 10;
         agent.SetDestination(player.position);
-        animator.SetBool("Walk Forward", true);
+        animator.SetBool("Walk Forward", false);
+        animator.SetBool("Run Forward", true);
     }
 
     private void Notice() {
@@ -99,10 +103,12 @@ public class EnemyController : MonoBehaviour
     private void Stop() {
         agent.SetDestination(transform.position);
         animator.SetBool("Walk Forward", false);
+        animator.SetBool("Run Forward", false);
     }
 
     private void Rotate() {
         animator.SetBool("Walk Forward", false);
+        animator.SetBool("Run Forward", false);
         Vector3 direction = (player.position - transform.position).normalized;
         Quaternion rotation = Quaternion.LookRotation(new Vector3(direction.x, 0.0f, direction.z));
         transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 5f);
@@ -113,7 +119,6 @@ public class EnemyController : MonoBehaviour
     }
 
     private void OnTriggerEnter(Collider other) {
-        print(other.gameObject.tag);
         if (other.gameObject.tag == "Player") {
             attackedObject = other.gameObject;
             InvokeRepeating ("AttackInLoop", 0, 1); 
@@ -153,9 +158,10 @@ public class EnemyController : MonoBehaviour
 
     private IEnumerator IsDead() {
         if (enemyStat.GetHealth() <= 0) {
-            // Destroy(this);
+            PointManager.GetInstance().AddKill();
+            agent.isStopped = true;
             animator.SetTrigger("Die");
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(1.45f);
             Destroy(gameObject);
         }
     }

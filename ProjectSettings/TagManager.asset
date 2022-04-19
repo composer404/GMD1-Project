@@ -3,12 +3,18 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - SpawnPoint
+  - Ground
+  - InGameUI
+  - Water
+  - Enemy
+  - Burst
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Swamp
   - Water
   - UI
   - 

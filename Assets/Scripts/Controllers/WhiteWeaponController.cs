@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeaponController : MonoBehaviour
+public class WhiteWeaponController : Weapon
 {
     private CapsuleCollider capsuleCollider;
     private WeaponStat weaponStat;
@@ -13,7 +13,7 @@ public class WeaponController : MonoBehaviour
         weaponStat = gameObject.GetComponent<WeaponStat>();
     }
 
-    public IEnumerator Attack() {
+    public override IEnumerator Attack() {
         isAttacking = true;
         yield return new WaitForSeconds(0.3f);
         capsuleCollider.enabled = true;
@@ -23,7 +23,7 @@ public class WeaponController : MonoBehaviour
         isAttacking = false;
     }
 
-    public bool GetAttackState() {
+    public override bool GetAttackState() {
         return isAttacking;
     }
 
