@@ -289,6 +289,13 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if(other.gameObject.tag == "Swamp")
+        {
+           walkSpeed = 5f;
+            runSpeed = 5f;
+        }
+
+
         Collectable collectable = other.GetComponent<Collectable>();
 
         if(collectable != null && GetActiveElementInRightHand() == null) {
@@ -301,6 +308,12 @@ public class PlayerController : MonoBehaviour
         if (collectableInArea != null) {
             userInterfaceController.CloseMessageInfoBox();
             collectableInArea = null;
+        }
+        
+        if(other.gameObject.tag == "Swamp")
+        {
+            walkSpeed = 10f ;
+            runSpeed = 20f;
         }
     }
 
