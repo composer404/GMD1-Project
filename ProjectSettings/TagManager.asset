@@ -10,6 +10,7 @@ TagManager:
   - Water
   - Enemy
   - Burst
+  - Swamp
   layers:
   - Default
   - TransparentFX
