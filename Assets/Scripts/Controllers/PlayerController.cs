@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
     private Animator animator;
     private Vector3 movementDirection;
     private PlayerStat playerStat;
-    
+
     /* ---------------------------- BOOLEAN VARAIBLES --------------------------- */
 
     private bool isShortJump;
@@ -51,6 +51,7 @@ public class PlayerController : MonoBehaviour
     private bool isAttacked;
     private bool isNotGrounded;
     private bool isRunHold;
+    private bool isHurt;
 
     /* ----------------------- CONTROLERS OF GAME OBJECTS ----------------------- */
 
@@ -59,27 +60,34 @@ public class PlayerController : MonoBehaviour
     private Collectable activeItemInHandLeft;
     private UserInterfaceController userInterfaceController;
 
-    void Start() {
+    void Start()
+    {
         rb = gameObject.GetComponent<Rigidbody>();
         animator = gameObject.GetComponent<Animator>();
         playerStat = gameObject.GetComponent<PlayerStat>();
         userInterfaceController = UI.GetComponent<UserInterfaceController>();
     }
 
-    void Update() {
-        if (isShortJump) {
+    void Update()
+    {
+        if (isShortJump)
+        {
             rb.AddForce(Vector3.up * shortJumpSpeed, ForceMode.Impulse);
             isShortJump = false;
         }
     }
 
-    void FixedUpdate() {
-        if (movementDirection == Vector3.zero) {
-            if (isWalking) {
+    void FixedUpdate()
+    {
+        if (movementDirection == Vector3.zero)
+        {
+            if (isWalking)
+            {
                 animator.SetBool("Walk", false);
             }
 
-            if (isRunning) {
+            if (isRunning)
+            {
                 animator.SetBool("Run", false);
             }
             return;
@@ -88,56 +96,65 @@ public class PlayerController : MonoBehaviour
 
         // Smooth character rotation when dirction chagnes
 
-        if (!isPickup || !IsAttacking()) {
+        if (!isPickup || !IsAttacking())
+        {
             float targetAngle = Mathf.Atan2(movementDirection.x, movementDirection.z) * Mathf.Rad2Deg;
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref currentRotation, turnSmooth);
-            
+
             rb.MovePosition(rb.position + movementDirection * (isRunning ? runSpeed : walkSpeed) * Time.fixedDeltaTime);
             rb.MoveRotation(Quaternion.Euler(0f, angle, 0f));
         }
     }
-   
+
     /* -------------------------------------------------------------------------- */
     /*                                    INPUTS                                  */
     /* -------------------------------------------------------------------------- */
 
-    void OnMove(InputValue movement) {
+    void OnMove(InputValue movement)
+    {
         Vector2 movementVector = movement.Get<Vector2>();
         movementDirection = new Vector3(movementVector.x, 0.0f, movementVector.y);
 
-        if (!isRunning) {
+        if (!isRunning)
+        {
             animator.SetBool("Walk", true);
             isWalking = true;
         }
 
-        if (isRunning) {
+        if (isRunning)
+        {
             animator.SetBool("Run", true);
         }
 
-    } 
+    }
 
-    void OnRun() {
-        if (movementDirection == Vector3.zero) {
+    void OnRun()
+    {
+        if (movementDirection == Vector3.zero)
+        {
             return;
         }
 
         isRunHold = !isRunHold;
-        if(isRunHold) {
+        if (isRunHold)
+        {
             animator.SetBool("Run", true);
             animator.SetBool("Walk", false);
             isRunning = true;
             isWalking = false;
             return;
         }
-        
+
         animator.SetBool("Run", false);
         animator.SetBool("Walk", true);
         isRunning = false;
         isWalking = true;
     }
 
-    void OnShortJump() {
-        if (!isNotGrounded) {
+    void OnShortJump()
+    {
+        if (!isNotGrounded)
+        {
             isNotGrounded = true;
             isShortJump = true;
             // isWalking = false;
@@ -146,30 +163,38 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void OnShortAttack() {
-        if(!IsAttacking()) {
+    void OnShortAttack()
+    {
+        if (!IsAttacking())
+        {
             GameObject activeItem = GetActiveElementInRightHand();
 
-            if (activeItem != null) {
+            if (activeItem != null)
+            {
                 CollectableTypes collectableType = activeItem.GetComponent<Collectable>().GetCollectableType();
 
-                if (collectableType == CollectableTypes.WHITE_WEAPON || collectableType == CollectableTypes.FIRE_WEAPON) {
+                if (collectableType == CollectableTypes.WHITE_WEAPON || collectableType == CollectableTypes.FIRE_WEAPON)
+                {
                     animator.SetTrigger("ShortAttack");
                     Weapon weapon = activeItem.GetComponent<Weapon>();
-                    if (weapon == null) {
+                    if (weapon == null)
+                    {
                         return;
-                    }   
+                    }
                     StartCoroutine(weapon.Attack());
                 }
             }
         }
     }
 
-    void OnHeal() {
+    void OnHeal()
+    {
         GameObject activeItem = GetActiveElementInLeftHand();
-        if (activeItem) {
+        if (activeItem)
+        {
             CollectableTypes type = activeItem.GetComponent<Collectable>().GetCollectableType();
-            if (type == CollectableTypes.POTION) {
+            if (type == CollectableTypes.POTION)
+            {
 
                 animator.SetTrigger("UsePotion");
                 //TODO Potion logic
@@ -177,13 +202,16 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public IEnumerator GetHit(int damage) {
-        if(!isAttacked && !IsAttacking()) {
+    public IEnumerator GetHit(int damage)
+    {
+        if (!isAttacked && !IsAttacking())
+        {
             isAttacked = true;
             yield return new WaitForSeconds(0.25f);
             playerStat.GetDamage(damage);
             healthBarController.SetHealth(playerStat.GetHealth());
-            if (IsDead()) {
+            if (IsDead())
+            {
                 animator.SetTrigger("Dead");
                 // Destroy(this);
                 GameStateManager.GetInstance().GameOver();
@@ -192,31 +220,58 @@ public class PlayerController : MonoBehaviour
             animator.SetTrigger("Hit");
             isAttacked = false;
         }
-        
     }
 
-    private bool IsAttacking() {
-        if (activeItemInHandRight == null) {
+     public IEnumerator GetHurt(int damage)
+    {
+        if(!isHurt)
+        {
+            isHurt = true;
+            yield return new WaitForSeconds(0.25f);
+            playerStat.GetDamage(damage);
+            healthBarController.SetHealth(playerStat.GetHealth());
+            if (IsDead())
+            {
+                animator.SetTrigger("Dead");
+                // Destroy(this);
+                GameStateManager.GetInstance().GameOver();
+                yield return null;
+            }
+            animator.SetTrigger("Hit");
+            isHurt = false;
+        }
+        }
+    
+
+    private bool IsAttacking()
+    {
+        if (activeItemInHandRight == null)
+        {
             return false;
         }
 
         Weapon weapon = activeItemInHandRight.GetComponent<Weapon>();
-        if (weapon == null) {
+        if (weapon == null)
+        {
             return false;
         }
 
         return weapon.GetAttackState();
     }
 
-    private bool IsDead() {
-        if (playerStat.GetHealth() <= 0) {
+    private bool IsDead()
+    {
+        if (playerStat.GetHealth() <= 0)
+        {
             return true;
         }
         return false;
     }
 
-    void OnPickup() {
-        if (collectableInArea != null) {
+    void OnPickup()
+    {
+        if (collectableInArea != null)
+        {
             isPickup = true;
             userInterfaceController.CloseMessageInfoBox();
             animator.SetTrigger("PickUp");
@@ -224,13 +279,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void OnDrop() {
+    void OnDrop()
+    {
         GameObject activeItem = GetActiveElementInRightHand();
 
-        if (activeItem) {
+        if (activeItem)
+        {
             Rigidbody itemRb = activeItem.AddComponent<Rigidbody>();
             itemRb.AddForce(transform.forward * 2.0f, ForceMode.Impulse);
-            
+
             Invoke("PlaceItemOnGround", 0.25f);
         }
     }
@@ -240,34 +297,42 @@ public class PlayerController : MonoBehaviour
     /*                               INVOCE METHODS                               */
     /* -------------------------------------------------------------------------- */
 
-    private void PlaceItemOnGround() {
+    private void PlaceItemOnGround()
+    {
         activeItemInHandRight.GetComponent<BoxCollider>().enabled = true;
         Destroy((activeItemInHandRight as MonoBehaviour).GetComponent<Rigidbody>());
         activeItemInHandRight.transform.parent = null;
         activeItemInHandRight = null;
     }
 
-    private void PickupItemAfterAnimation() {
+    private void PickupItemAfterAnimation()
+    {
         collectableInArea.OnPickup();
-        if (collectableInArea.GetCollectPlace() == CollectPlaces.RIGHT_HAND) {
+        if (collectableInArea.GetCollectPlace() == CollectPlaces.RIGHT_HAND)
+        {
             SetItemActive(rightHand, CollectPlaces.RIGHT_HAND);
         }
 
-        if (collectableInArea.GetCollectPlace() == CollectPlaces.LEFT_HAND) {
+        if (collectableInArea.GetCollectPlace() == CollectPlaces.LEFT_HAND)
+        {
             SetItemActive(leftHand, CollectPlaces.LEFT_HAND);
         }
         collectableInArea.OnActive();
         isPickup = false;
     }
 
-    private void OnCollisionEnter() {
-        if(isNotGrounded) {
+    private void OnCollisionEnter()
+    {
+        if (isNotGrounded)
+        {
             isNotGrounded = false;
-            if (isRunning) {
+            if (isRunning)
+            {
                 animator.SetBool("Run", true);
             }
 
-            if (isWalking) {
+            if (isWalking)
+            {
                 animator.SetBool("Walk", true);
             }
         }
@@ -278,41 +343,53 @@ public class PlayerController : MonoBehaviour
     /*                                  TRIGGERS                                  */
     /* -------------------------------------------------------------------------- */
 
-    private void OnTriggerEnter(Collider other) {
-        if (other.gameObject.tag == "Water") {
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Water")
+        {
             KillPlayer();
         }
 
-        if (other.gameObject.tag == "Ground") {
-            if (isNotGrounded == true) {
+        if (other.gameObject.tag == "Ground")
+        {
+            if (isNotGrounded == true)
+            {
                 isNotGrounded = false;
             }
         }
 
-        if(other.gameObject.tag == "Swamp")
+        if (other.gameObject.tag == "Swamp")
         {
-           walkSpeed = 5f;
+            walkSpeed = 5f;
             runSpeed = 5f;
+        }
+
+        if(other.gameObject.tag == "PoisonFlower")
+        {
+            HurtPlayer();
         }
 
 
         Collectable collectable = other.GetComponent<Collectable>();
 
-        if(collectable != null && GetActiveElementInRightHand() == null) {
+        if (collectable != null && GetActiveElementInRightHand() == null)
+        {
             userInterfaceController.OpenMessageInfoBox(collectable.GetInteractionText());
             collectableInArea = collectable;
         }
     }
 
-    private void OnTriggerExit(Collider other) {
-        if (collectableInArea != null) {
+    private void OnTriggerExit(Collider other)
+    {
+        if (collectableInArea != null)
+        {
             userInterfaceController.CloseMessageInfoBox();
             collectableInArea = null;
         }
-        
-        if(other.gameObject.tag == "Swamp")
+
+        if (other.gameObject.tag == "Swamp")
         {
-            walkSpeed = 10f ;
+            walkSpeed = 10f;
             runSpeed = 20f;
         }
     }
@@ -329,26 +406,36 @@ public class PlayerController : MonoBehaviour
         activeItem.transform.parent = hand.transform;
         activeItem.GetComponent<BoxCollider>().enabled = false;
 
-        if (place == CollectPlaces.LEFT_HAND) {
+        if (place == CollectPlaces.LEFT_HAND)
+        {
             activeItemInHandLeft = collectableInArea;
             return;
         }
         activeItemInHandRight = collectableInArea;
     }
 
-    private GameObject GetActiveElementInRightHand() {
-        if (activeItemInHandRight == null) {
+    private GameObject GetActiveElementInRightHand()
+    {
+        if (activeItemInHandRight == null)
+        {
             return null;
         }
         return (activeItemInHandRight as MonoBehaviour).gameObject;
     }
 
-    private GameObject GetActiveElementInLeftHand() {
+    private GameObject GetActiveElementInLeftHand()
+    {
         return (activeItemInHandLeft as MonoBehaviour).gameObject;
     }
 
-    private void KillPlayer() {
+    private void KillPlayer()
+    {
         StartCoroutine(GetHit(playerStat.GetMaxHealth()));
+    }
+
+    private void HurtPlayer()
+    {
+        StartCoroutine(GetHurt(playerStat.GetDamage()));
     }
 }
 
