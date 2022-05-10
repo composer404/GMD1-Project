@@ -4,11 +4,12 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Poison Flower
+  - SpawnPoint
   - Ground
-  - Enemy
-  - Coin
   - InGameUI
+  - Enemy
+  - Swamp
+  - PoisonFlower
   - UsernameInput
   - Leaderboard
   - Burst
@@ -17,7 +18,7 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Swamp
   - Water
   - UI
   - 

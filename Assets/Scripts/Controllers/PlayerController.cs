@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
     private Animator animator;
     private Vector3 movementDirection;
     private PlayerStat playerStat;
-    
+
     /* ---------------------------- BOOLEAN VARAIBLES --------------------------- */
 
     private bool isShortJump;
@@ -59,15 +59,18 @@ public class PlayerController : MonoBehaviour
     private Collectable activeItemInHandLeft;
     private UserInterfaceController userInterfaceController;
 
-    void Start() {
+    void Start()
+    {
         rb = gameObject.GetComponent<Rigidbody>();
         animator = gameObject.GetComponent<Animator>();
         playerStat = gameObject.GetComponent<PlayerStat>();
         userInterfaceController = UI.GetComponent<UserInterfaceController>();
     }
 
-    void Update() {
-        if (isShortJump) {
+    void Update()
+    {
+        if (isShortJump)
+        {
             rb.AddForce(Vector3.up * shortJumpSpeed, ForceMode.Impulse);
             isShortJump = false;
         }
@@ -79,7 +82,8 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("Walk", false);
             }
 
-            if (isRunning) {
+            if (isRunning)
+            {
                 animator.SetBool("Run", false);
             }
             return;
@@ -96,12 +100,13 @@ public class PlayerController : MonoBehaviour
             rb.MoveRotation(Quaternion.Euler(0f, angle, 0f));
         }
     }
-   
+
     /* -------------------------------------------------------------------------- */
     /*                                    INPUTS                                  */
     /* -------------------------------------------------------------------------- */
 
-    void OnMove(InputValue movement) {
+    void OnMove(InputValue movement)
+    {
         Vector2 movementVector = movement.Get<Vector2>();
         movementDirection = new Vector3(movementVector.x, 0.0f, movementVector.y);
 
@@ -114,7 +119,10 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("Run", true);
         }
 
-    } 
+        if (isRunning) {
+            animator.SetBool("Run", true);
+        }
+    }
 
     void OnRun() {
         if (movementDirection == Vector3.zero) {
@@ -164,26 +172,34 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+    
 
-    void OnHeal() {
+    void OnHeal()
+    {
         GameObject activeItem = GetActiveElementInLeftHand();
-        if (activeItem) {
+        if (activeItem)
+        {
             CollectableTypes type = activeItem.GetComponent<Collectable>().GetCollectableType();
-            if (type == CollectableTypes.POTION) {
+            if (type == CollectableTypes.POTION)
+            {
 
                 animator.SetTrigger("UsePotion");
                 //TODO Potion logic
             }
         }
     }
+    
 
-    public IEnumerator GetHit(int damage) {
-        if(!isAttacked && !IsAttacking()) {
+    public IEnumerator GetHit(int damage)
+    {
+        if (!isAttacked && !IsAttacking())
+        {
             isAttacked = true;
             yield return new WaitForSeconds(0.25f);
             playerStat.GetDamage(damage);
             healthBarController.SetHealth(playerStat.GetHealth());
-            if (IsDead()) {
+            if (IsDead())
+            {
                 animator.SetTrigger("Dead");
                 // Destroy(this);
                 GameStateManager.GetInstance().GameOver();
@@ -192,11 +208,33 @@ public class PlayerController : MonoBehaviour
             animator.SetTrigger("Hit");
             isAttacked = false;
         }
-        
     }
 
-    private bool IsAttacking() {
-        if (activeItemInHandRight == null) {
+     public IEnumerator GetHurt(int damage)
+    {
+        if(!isHurt)
+        {
+            isHurt = true;
+            yield return new WaitForSeconds(0.25f);
+            playerStat.GetDamage(damage);
+            healthBarController.SetHealth(playerStat.GetHealth());
+            if (IsDead())
+            {
+                animator.SetTrigger("Dead");
+                // Destroy(this);
+                GameStateManager.GetInstance().GameOver();
+                yield return null;
+            }
+            animator.SetTrigger("Hit");
+            isHurt = false;
+        }
+        }
+    
+
+    private bool IsAttacking()
+    {
+        if (activeItemInHandRight == null)
+        {
             return false;
         }
 
@@ -208,8 +246,10 @@ public class PlayerController : MonoBehaviour
         return weapon.GetAttackState();
     }
 
-    private bool IsDead() {
-        if (playerStat.GetHealth() <= 0) {
+    private bool IsDead()
+    {
+        if (playerStat.GetHealth() <= 0)
+        {
             return true;
         }
         return false;
@@ -224,13 +264,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void OnDrop() {
+    void OnDrop()
+    {
         GameObject activeItem = GetActiveElementInRightHand();
 
-        if (activeItem) {
+        if (activeItem)
+        {
             Rigidbody itemRb = activeItem.AddComponent<Rigidbody>();
             itemRb.AddForce(transform.forward * 2.0f, ForceMode.Impulse);
-            
+
             Invoke("PlaceItemOnGround", 0.25f);
         }
     }
@@ -240,20 +282,24 @@ public class PlayerController : MonoBehaviour
     /*                               INVOCE METHODS                               */
     /* -------------------------------------------------------------------------- */
 
-    private void PlaceItemOnGround() {
+    private void PlaceItemOnGround()
+    {
         activeItemInHandRight.GetComponent<BoxCollider>().enabled = true;
         Destroy((activeItemInHandRight as MonoBehaviour).GetComponent<Rigidbody>());
         activeItemInHandRight.transform.parent = null;
         activeItemInHandRight = null;
     }
 
-    private void PickupItemAfterAnimation() {
+    private void PickupItemAfterAnimation()
+    {
         collectableInArea.OnPickup();
-        if (collectableInArea.GetCollectPlace() == CollectPlaces.RIGHT_HAND) {
+        if (collectableInArea.GetCollectPlace() == CollectPlaces.RIGHT_HAND)
+        {
             SetItemActive(rightHand, CollectPlaces.RIGHT_HAND);
         }
 
-        if (collectableInArea.GetCollectPlace() == CollectPlaces.LEFT_HAND) {
+        if (collectableInArea.GetCollectPlace() == CollectPlaces.LEFT_HAND)
+        {
             SetItemActive(leftHand, CollectPlaces.LEFT_HAND);
         }
         collectableInArea.OnActive();
@@ -289,6 +335,18 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if (other.gameObject.tag == "Swamp")
+        {
+            walkSpeed = 5f;
+            runSpeed = 5f;
+        }
+
+        if(other.gameObject.tag == "PoisonFlower")
+        {
+            HurtPlayer();
+        }
+
+
         Collectable collectable = other.GetComponent<Collectable>();
 
         if(collectable != null && GetActiveElementInRightHand() == null) {
@@ -297,10 +355,18 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit(Collider other) {
-        if (collectableInArea != null) {
+    private void OnTriggerExit(Collider other)
+    {
+        if (collectableInArea != null)
+        {
             userInterfaceController.CloseMessageInfoBox();
             collectableInArea = null;
+        }
+
+        if (other.gameObject.tag == "Swamp")
+        {
+            walkSpeed = 10f;
+            runSpeed = 20f;
         }
     }
 
@@ -316,7 +382,8 @@ public class PlayerController : MonoBehaviour
         activeItem.transform.parent = hand.transform;
         activeItem.GetComponent<BoxCollider>().enabled = false;
 
-        if (place == CollectPlaces.LEFT_HAND) {
+        if (place == CollectPlaces.LEFT_HAND)
+        {
             activeItemInHandLeft = collectableInArea;
             return;
         }
@@ -330,12 +397,19 @@ public class PlayerController : MonoBehaviour
         return (activeItemInHandRight as MonoBehaviour).gameObject;
     }
 
-    private GameObject GetActiveElementInLeftHand() {
+    private GameObject GetActiveElementInLeftHand()
+    {
         return (activeItemInHandLeft as MonoBehaviour).gameObject;
     }
 
-    private void KillPlayer() {
+    private void KillPlayer()
+    {
         StartCoroutine(GetHit(playerStat.GetMaxHealth()));
+    }
+
+    private void HurtPlayer()
+    {
+        StartCoroutine(GetHurt(playerStat.GetDamage()));
     }
 }
 

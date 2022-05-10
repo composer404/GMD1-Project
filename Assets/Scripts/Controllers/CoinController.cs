@@ -15,6 +15,8 @@ public class CoinController : MonoBehaviour
         pointManager = PointManager.GetInstance();
         generalInfoManager = GeneralInfoManager.GetInstance();
         gameStateManager = GameStateManager.GetInstance();
+        gameObject.transform.position = new Vector3(transform.position.x,24,transform.position.z);
+        gameObject.transform.Rotate(270,0,0);
     }
 
     void Update() {
