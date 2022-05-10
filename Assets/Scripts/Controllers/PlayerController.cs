@@ -51,7 +51,6 @@ public class PlayerController : MonoBehaviour
     private bool isAttacked;
     private bool isNotGrounded;
     private bool isRunHold;
-    private bool isHurt;
 
     /* ----------------------- CONTROLERS OF GAME OBJECTS ----------------------- */
 
@@ -120,8 +119,7 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("Run", true);
         }
 
-        if (isRunning)
-        {
+        if (isRunning) {
             animator.SetBool("Run", true);
         }
     }
