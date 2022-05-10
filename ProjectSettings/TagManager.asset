@@ -11,6 +11,8 @@ TagManager:
   - Enemy
   - Burst
   - Swamp
+  - Poison Flower
+  - PoisonFlower
   layers:
   - Default
   - TransparentFX
