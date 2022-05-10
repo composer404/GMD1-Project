@@ -51,6 +51,7 @@ public class PlayerController : MonoBehaviour
     private bool isAttacked;
     private bool isNotGrounded;
     private bool isRunHold;
+    private bool isHurt;
 
     /* ----------------------- CONTROLERS OF GAME OBJECTS ----------------------- */
 
