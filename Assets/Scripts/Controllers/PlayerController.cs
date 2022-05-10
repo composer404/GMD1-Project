@@ -77,12 +77,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
-    {
-        if (movementDirection == Vector3.zero)
-        {
-            if (isWalking)
-            {
+    void FixedUpdate() {
+        if (movementDirection == Vector3.zero) {
+            if (isWalking) {
                 animator.SetBool("Walk", false);
             }
 
@@ -96,11 +93,10 @@ public class PlayerController : MonoBehaviour
 
         // Smooth character rotation when dirction chagnes
 
-        if (!isPickup || !IsAttacking())
-        {
+        if (!isPickup || !IsAttacking()) {
             float targetAngle = Mathf.Atan2(movementDirection.x, movementDirection.z) * Mathf.Rad2Deg;
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref currentRotation, turnSmooth);
-
+            
             rb.MovePosition(rb.position + movementDirection * (isRunning ? runSpeed : walkSpeed) * Time.fixedDeltaTime);
             rb.MoveRotation(Quaternion.Euler(0f, angle, 0f));
         }
@@ -115,46 +111,43 @@ public class PlayerController : MonoBehaviour
         Vector2 movementVector = movement.Get<Vector2>();
         movementDirection = new Vector3(movementVector.x, 0.0f, movementVector.y);
 
-        if (!isRunning)
-        {
+        if (!isRunning) {
             animator.SetBool("Walk", true);
             isWalking = true;
+        }
+
+        if (isRunning) {
+            animator.SetBool("Run", true);
         }
 
         if (isRunning)
         {
             animator.SetBool("Run", true);
         }
-
     }
 
-    void OnRun()
-    {
-        if (movementDirection == Vector3.zero)
-        {
+    void OnRun() {
+        if (movementDirection == Vector3.zero) {
             return;
         }
 
         isRunHold = !isRunHold;
-        if (isRunHold)
-        {
+        if(isRunHold) {
             animator.SetBool("Run", true);
             animator.SetBool("Walk", false);
             isRunning = true;
             isWalking = false;
             return;
         }
-
+        
         animator.SetBool("Run", false);
         animator.SetBool("Walk", true);
         isRunning = false;
         isWalking = true;
     }
 
-    void OnShortJump()
-    {
-        if (!isNotGrounded)
-        {
+    void OnShortJump() {
+        if (!isNotGrounded) {
             isNotGrounded = true;
             isShortJump = true;
             // isWalking = false;
@@ -163,29 +156,25 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void OnShortAttack()
-    {
-        if (!IsAttacking())
-        {
+    void OnShortAttack() {
+        if(!IsAttacking()) {
             GameObject activeItem = GetActiveElementInRightHand();
 
-            if (activeItem != null)
-            {
+            if (activeItem != null) {
                 CollectableTypes collectableType = activeItem.GetComponent<Collectable>().GetCollectableType();
 
-                if (collectableType == CollectableTypes.WHITE_WEAPON || collectableType == CollectableTypes.FIRE_WEAPON)
-                {
+                if (collectableType == CollectableTypes.WHITE_WEAPON || collectableType == CollectableTypes.FIRE_WEAPON) {
                     animator.SetTrigger("ShortAttack");
                     Weapon weapon = activeItem.GetComponent<Weapon>();
-                    if (weapon == null)
-                    {
+                    if (weapon == null) {
                         return;
-                    }
+                    }   
                     StartCoroutine(weapon.Attack());
                 }
             }
         }
     }
+    
 
     void OnHeal()
     {
@@ -201,6 +190,7 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+    
 
     public IEnumerator GetHit(int damage)
     {
@@ -251,8 +241,7 @@ public class PlayerController : MonoBehaviour
         }
 
         Weapon weapon = activeItemInHandRight.GetComponent<Weapon>();
-        if (weapon == null)
-        {
+        if (weapon == null) {
             return false;
         }
 
@@ -268,10 +257,8 @@ public class PlayerController : MonoBehaviour
         return false;
     }
 
-    void OnPickup()
-    {
-        if (collectableInArea != null)
-        {
+    void OnPickup() {
+        if (collectableInArea != null) {
             isPickup = true;
             userInterfaceController.CloseMessageInfoBox();
             animator.SetTrigger("PickUp");
@@ -321,18 +308,14 @@ public class PlayerController : MonoBehaviour
         isPickup = false;
     }
 
-    private void OnCollisionEnter()
-    {
-        if (isNotGrounded)
-        {
+    private void OnCollisionEnter() {
+        if(isNotGrounded) {
             isNotGrounded = false;
-            if (isRunning)
-            {
+            if (isRunning) {
                 animator.SetBool("Run", true);
             }
 
-            if (isWalking)
-            {
+            if (isWalking) {
                 animator.SetBool("Walk", true);
             }
         }
@@ -343,17 +326,13 @@ public class PlayerController : MonoBehaviour
     /*                                  TRIGGERS                                  */
     /* -------------------------------------------------------------------------- */
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == "Water")
-        {
+    private void OnTriggerEnter(Collider other) {
+        if (other.gameObject.tag == "Water") {
             KillPlayer();
         }
 
-        if (other.gameObject.tag == "Ground")
-        {
-            if (isNotGrounded == true)
-            {
+        if (other.gameObject.tag == "Ground") {
+            if (isNotGrounded == true) {
                 isNotGrounded = false;
             }
         }
@@ -372,8 +351,7 @@ public class PlayerController : MonoBehaviour
 
         Collectable collectable = other.GetComponent<Collectable>();
 
-        if (collectable != null && GetActiveElementInRightHand() == null)
-        {
+        if(collectable != null && GetActiveElementInRightHand() == null) {
             userInterfaceController.OpenMessageInfoBox(collectable.GetInteractionText());
             collectableInArea = collectable;
         }
@@ -414,10 +392,8 @@ public class PlayerController : MonoBehaviour
         activeItemInHandRight = collectableInArea;
     }
 
-    private GameObject GetActiveElementInRightHand()
-    {
-        if (activeItemInHandRight == null)
-        {
+    private GameObject GetActiveElementInRightHand() {
+        if (activeItemInHandRight == null) {
             return null;
         }
         return (activeItemInHandRight as MonoBehaviour).gameObject;
