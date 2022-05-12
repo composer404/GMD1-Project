@@ -34,6 +34,13 @@ public class PlayerStat : MonoBehaviour
         this.damage += damage;
     }
 
+    public void IncreaseHealth(int health) {
+        this.health += health;
+        if(this.health > this.maxHealth) {
+            this.health = this.maxHealth;
+        }
+    }
+
     public void DecreaseDamage(int damage) {
         this.damage -= damage;
     }
