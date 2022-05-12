@@ -29,10 +29,28 @@ public class AudioManager : MonoBehaviour
     private AudioSource coin;
 
     [SerializeField]
+    private AudioSource jump;
+
+    [SerializeField]
+    private AudioSource gameOver;
+
+    [SerializeField]
+    private AudioSource grunt;
+
+    [SerializeField]
+    private AudioSource sword;
+
+    [SerializeField]
+    private AudioSource heart;
+
+    [SerializeField]
     private AudioSource walk;
 
     [SerializeField]
-    private AudioSource jump;
+    private AudioSource sprint;
+
+    [SerializeField]
+    private AudioSource monster;
 
     public void PlayMenuItemHover() {
         menuItemHover.Play();
@@ -46,12 +64,35 @@ public class AudioManager : MonoBehaviour
         coin.Play();
     }
 
-    public void PlayWalk() {
-        walk.Play();
-    }
-
     public void PlayJump() {
         jump.Play();
     }
 
+     public void PlayGameOver() {
+        gameOver.Play();
+    }
+
+    public void PlayGrunt() {
+        grunt.Play();
+    }
+
+    public void PlaySword() {
+        sword.Play();
+    }
+
+    public void PlayHeart() {
+        heart.Play();
+    }
+
+    public void PlayWalk() {
+        walk.Play();
+    }
+
+    public void PlaySprint() {
+        sprint.Play();
+    }
+
+    public void PlayMonster() {
+        monster.Play();
+    }
 }

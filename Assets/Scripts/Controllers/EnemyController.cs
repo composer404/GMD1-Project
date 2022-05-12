@@ -57,6 +57,7 @@ public class EnemyController : MonoBehaviour
     /* ---------------------------- Public functions ---------------------------- */
 
     public void GetDamage(int damage) {
+        AudioManager.GetInstance().PlayMonster();
         enemyStat.GetHit(damage);
         Follow();
         healthBar.SetHealth(enemyStat.GetHealth());
@@ -149,6 +150,7 @@ public class EnemyController : MonoBehaviour
     /* -------------------------------------------------------------------------- */
 
     private void AttackInLoop() {
+        AudioManager.GetInstance().PlayMonster();
         animator.SetTrigger("Attack 01");
         PlayerController controller = attackedObject.GetComponent<PlayerController>();
         if (controller != null) {

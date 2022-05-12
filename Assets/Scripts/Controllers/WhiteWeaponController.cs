@@ -14,6 +14,7 @@ public class WhiteWeaponController : Weapon
     }
 
     public override IEnumerator Attack() {
+        AudioManager.GetInstance().PlaySword();
         isAttacking = true;
         yield return new WaitForSeconds(0.3f);
         capsuleCollider.enabled = true;

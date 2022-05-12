@@ -18,10 +18,16 @@ public class PlayerController : MonoBehaviour
     private GameObject UI;
 
     [SerializeField]
+    private float speed;
+
+    [SerializeField]
     private float walkSpeed = 10f;
 
     [SerializeField]
     private float runSpeed = 20f;
+
+    [SerializeField]
+    private float stamina = 100f;
 
     [SerializeField]
     private float shortJumpSpeed = 300f;
@@ -31,6 +37,18 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private float turnSmooth = 0.1f;
+
+    [SerializeField]
+    private float drainRate = 1f;
+
+    [SerializeField]
+    private float reChargeRate = 1f;
+ 
+    [SerializeField]
+    private float fatigueTimer = 0f;
+
+    [SerializeField]
+    private float exponentialPenalty = 1f;
 
 
     private float currentRotation;
@@ -51,6 +69,7 @@ public class PlayerController : MonoBehaviour
     private bool isAttacked;
     private bool isNotGrounded;
     private bool isRunHold;
+    private bool isFatigued;
 
     /* ----------------------- CONTROLERS OF GAME OBJECTS ----------------------- */
 
@@ -68,8 +87,86 @@ public class PlayerController : MonoBehaviour
 
     void Update() {
         if (isShortJump) {
+            AudioManager.GetInstance().PlayJump();
             rb.AddForce(Vector3.up * shortJumpSpeed, ForceMode.Impulse);
             isShortJump = false;
+        }
+
+        //Stamina control while running
+
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            if (stamina > 0 && !isFatigued)
+            {
+                speed = runSpeed;
+                isRunning = true;
+            }
+            else
+ 
+            if (isRunning || isFatigued)
+            {
+                speed = walkSpeed;
+                isRunning = false;
+ 
+                exponentialPenalty = 1;
+            }
+ 
+            exponentialPenalty += Time.deltaTime/20f;
+ 
+        }
+ 
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            if (isRunning || isFatigued)
+            {
+                speed = walkSpeed;
+                isRunning = false;
+            }
+        }
+ 
+        if (!Input.GetKey(KeyCode.LeftShift) && exponentialPenalty>1)
+        {
+            exponentialPenalty -= Time.deltaTime / 20f;
+            if (exponentialPenalty < 1)
+            {
+                exponentialPenalty = 1f;
+            }
+        }
+ 
+        if (isRunning)
+        {
+            stamina -= (Time.deltaTime * drainRate * exponentialPenalty);
+            stamina += Time.deltaTime * reChargeRate;
+        }
+        else
+ 
+        if(!isFatigued)
+        {
+            stamina += Time.deltaTime * reChargeRate;
+        }
+ 
+        if (stamina <= 0f && fatigueTimer <= 3)
+        {
+            fatigueTimer += Time.deltaTime;
+            isFatigued = true;
+        }
+        else
+ 
+        if (fatigueTimer >= 3)
+        {
+            stamina += Time.deltaTime * reChargeRate;
+            isFatigued = false;
+            fatigueTimer = 0;
+        }
+ 
+        if(stamina < 0f)
+        {
+            stamina = 0f;
+        }
+ 
+        if (stamina > 100f)
+        {
+            stamina = 100f;
         }
     }
 
@@ -106,11 +203,13 @@ public class PlayerController : MonoBehaviour
         movementDirection = new Vector3(movementVector.x, 0.0f, movementVector.y);
 
         if (!isRunning) {
+            AudioManager.GetInstance().PlayWalk();
             animator.SetBool("Walk", true);
             isWalking = true;
         }
 
         if (isRunning) {
+            AudioManager.GetInstance().PlaySprint();
             animator.SetBool("Run", true);
         }
 
@@ -178,6 +277,7 @@ public class PlayerController : MonoBehaviour
 
     public IEnumerator GetHit(int damage) {
         if(!isAttacked && !IsAttacking()) {
+            AudioManager.GetInstance().PlayGrunt();
             isAttacked = true;
             yield return new WaitForSeconds(0.25f);
             playerStat.GetDamage(damage);
