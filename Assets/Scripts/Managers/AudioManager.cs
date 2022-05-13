@@ -52,6 +52,9 @@ public class AudioManager : MonoBehaviour
     [SerializeField]
     private AudioSource monster;
 
+    [SerializeField]
+    private AudioSource sneeze;
+
     public void PlayMenuItemHover() {
         menuItemHover.Play();
     }
@@ -94,5 +97,9 @@ public class AudioManager : MonoBehaviour
 
     public void PlayMonster() {
         monster.Play();
+    }
+
+    public void PlaySneeze() {
+        sneeze.Play();
     }
 }
