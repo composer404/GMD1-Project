@@ -306,10 +306,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-     public IEnumerator GetHurt(int damage)
+    public IEnumerator GetHurt(int damage)
     {
         if(!isHurt)
         {
+            AudioManager.GetInstance().PlaySneeze();
             isHurt = true;
             yield return new WaitForSeconds(0.25f);
             playerStat.GetDamage(damage);
