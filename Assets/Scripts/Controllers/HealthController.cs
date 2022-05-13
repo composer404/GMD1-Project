@@ -7,9 +7,6 @@ public class HealthController : MonoBehaviour
     [SerializeField]
     private int health = 20;
 
-    [SerializeField]
-    private HealthBarController healthBarController;
-
     private PlayerStat playerStat;
 
     void Start() {
@@ -28,7 +25,8 @@ public class HealthController : MonoBehaviour
         }
         AudioManager.GetInstance().PlayHeart();
         playerStat.IncreaseHealth(health);
-        healthBarController.SetHealth(playerStat.GetHealth());
+        PlayerController healthBarController = PlayerManager.GetInstance().GetPlayer().gameObject.GetComponent<PlayerController>();
+        healthBarController.SetPlayerHealth(playerStat.GetHealth());
         Destroy(gameObject);
     }
 }

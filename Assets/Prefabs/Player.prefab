@@ -547,7 +547,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: aa2697fc5c62ddc469c79075db26cab4, type: 2}
+  - {fileID: 2100000, guid: c33a548d6df8c8a4daca736f3300dd9c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1828,11 +1828,17 @@ MonoBehaviour:
   rightHand: {fileID: 876826379631768240}
   leftHand: {fileID: 876917167738234556}
   UI: {fileID: 0}
+  speed: 0
   walkSpeed: 10
   runSpeed: 20
+  stamina: 100
   shortJumpSpeed: 10000
   longJumpSpeed: 20
   turnSmooth: 0.1
+  drainRate: 1
+  reChargeRate: 1
+  fatigueTimer: 0
+  exponentialPenalty: 1
 --- !u!1 &876907482586900290
 GameObject:
   m_ObjectHideFlags: 0

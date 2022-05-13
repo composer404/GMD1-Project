@@ -324,7 +324,11 @@ public class PlayerController : MonoBehaviour
             animator.SetTrigger("Hit");
             isHurt = false;
         }
-        }
+    }
+
+    public void SetPlayerHealth(int health) {
+        healthBarController.SetHealth(health);
+    }
     
 
     private bool IsAttacking()
