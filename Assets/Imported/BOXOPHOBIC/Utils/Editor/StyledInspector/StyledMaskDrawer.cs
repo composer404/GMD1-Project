@@ -61,7 +61,6 @@ namespace Boxophobic.StyledGUI
                 index = -1;
             }
 
-            //Debug Value
             EditorGUILayout.LabelField(index.ToString());
 
             property.intValue = index;

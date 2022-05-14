@@ -20,12 +20,21 @@ public class BurstController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) {
         if (other.gameObject.tag == "Enemy") {
-            EnemyController controller = other.transform.parent.GetComponent<EnemyController>();
+            EnemyController controller = null;
+
+            if (other.transform.parent == null) {
+                controller = other.transform.GetComponent<EnemyController>();
+            }
+
+            if(other.transform.parent != null) {
+                controller = other.transform.parent.GetComponent<EnemyController>();
+            }
+            
             if (controller == null) {
                 return;
             }
     
-            controller.GetDamage(weaponStat.getDamage());
+            controller.GetDamage(weaponStat.GetDamage());
             Destroy(gameObject);
         }
     }

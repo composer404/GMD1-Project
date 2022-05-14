@@ -287,11 +287,11 @@ public class PlayerController : MonoBehaviour
     }
     
 
-    public IEnumerator GetHit(int damage) {
+    public IEnumerator GetHit(int damage, float delayTime) {
         if(!isAttacked && !IsAttacking()) {
             AudioManager.GetInstance().PlayGrunt();
             isAttacked = true;
-            yield return new WaitForSeconds(0.25f);
+            yield return new WaitForSeconds(delayTime);
             playerStat.GetDamage(damage);
             healthBarController.SetHealth(playerStat.GetHealth());
             if (IsDead())
@@ -505,7 +505,7 @@ public class PlayerController : MonoBehaviour
 
     private void KillPlayer()
     {
-        StartCoroutine(GetHit(playerStat.GetMaxHealth()));
+        StartCoroutine(GetHit(playerStat.GetMaxHealth(), 0.25f));
     }
 
     private void HurtPlayer()

@@ -53,23 +53,14 @@ namespace Boxophobic.StyledGUI
                         material.SetVector(propName + "_asset", diffusionProfileAsset);
                         material.SetFloat(propName, diffusionProfileHash);
 
-                        Debug.Log("Diffusion Profile settings copied from " + materialObject.name + "!");
-
                         materialAsset = null;
                     }
                     else
                     {
                         material.SetVector(propName + "_asset", Vector4.zero);
                         material.SetFloat(propName, 0.0f);
-
-                        Debug.Log("Diffusion Profile settings set to None because " + materialObject.name + " has no Diffusion Profile asset!");
-
                         materialAsset = null;
                     }
-                }
-                else
-                {
-                    Debug.Log("The Material used to copy the Diffusion Profile does not a valid Diffusion Profile!");
                 }
             }
 

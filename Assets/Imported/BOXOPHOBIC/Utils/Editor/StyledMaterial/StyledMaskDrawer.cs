@@ -67,9 +67,6 @@ namespace Boxophobic.StyledGUI
                 index = -1;
             }
 
-            //Debug Value
-            //EditorGUILayout.LabelField(index.ToString());
-
             prop.floatValue = index;
 
             GUILayout.Space(down);

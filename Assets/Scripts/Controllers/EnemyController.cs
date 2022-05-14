@@ -17,6 +17,12 @@ public class EnemyController : MonoBehaviour
     [SerializeField]
     private HealthBarController healthBar;
 
+    [SerializeField]
+    private int additionalSpeed = 0;
+
+    [SerializeField]
+    private bool attackInLoop = true;
+
     private Transform player;
     private NavMeshAgent agent;
     private Animator animator;
@@ -31,6 +37,7 @@ public class EnemyController : MonoBehaviour
         agent = gameObject.GetComponent<NavMeshAgent>();
         enemyStat = gameObject.GetComponent<EnemyStat>();
         healthBar.SetHealth(enemyStat.GetHealth());
+        agent.speed *= additionalSpeed;
     }
 
     void Update() {
@@ -105,6 +112,10 @@ public class EnemyController : MonoBehaviour
         agent.SetDestination(transform.position);
         animator.SetBool("Walk Forward", false);
         animator.SetBool("Run Forward", false);
+
+        if (!attackInLoop) {
+            Attack();
+        }
     }
 
     private void Rotate() {
@@ -120,7 +131,7 @@ public class EnemyController : MonoBehaviour
     }
 
     private void OnTriggerEnter(Collider other) {
-        if (other.gameObject.tag == "Player") {
+        if (other.gameObject.tag == "Player" && attackInLoop) {
             attackedObject = other.gameObject;
             InvokeRepeating ("AttackInLoop", 0, 1); 
         }
@@ -154,7 +165,7 @@ public class EnemyController : MonoBehaviour
         animator.SetTrigger("Attack 01");
         PlayerController controller = attackedObject.GetComponent<PlayerController>();
         if (controller != null) {
-            StartCoroutine(controller.GetHit(enemyStat.GetDamage()));
+            StartCoroutine(controller.GetHit(enemyStat.GetDamage(), 0.25f));
         }
     }
 
