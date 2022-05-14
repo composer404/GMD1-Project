@@ -16,3 +16,4 @@ https://www.youtube.com/watch?v=kGq0BQuEuBU
   - https://www.youtube.com/watch?v=UjkSFoLxesw&t=36s (Enemies)
   - https://www.youtube.com/watch?v=ApDGpKqqSoE&list=PLboXykqtm8dynMisqs4_oKvAIZedixvtf&index=9 (Drop)
   - https://www.youtube.com/watch?v=zc8ac_qUXQY&t=627s (UI)
+  - https://medium.com/@Scriptie/find-a-random-point-on-a-plane-using-barycentric-coordinates-in-unity-f9470945036b (Random position)
