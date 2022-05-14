@@ -10,6 +10,8 @@ https://www.youtube.com/watch?v=kGq0BQuEuBU
  - https://assetstore.unity.com/packages/vfx/shaders/free-skybox-extended-shader-107400
  - https://assetstore.unity.com/packages/3d/characters/meshtint-free-boximon-fiery-mega-toon-series-153958
  - https://assetstore.unity.com/packages/3d/characters/humanoids/fantasy/battle-wizard-poly-art-128097
+ - https://assetstore.unity.com/packages/3d/vegetation/plants/lowpoly-flowers-47083#description
+ - https://assetstore.unity.com/packages/2d/textures-materials/floors/swamp-grass-material-137091#publisher
 
 # References - Knowledge base (Tutorials and articles used during the project)
   - https://www.youtube.com/watch?v=BLfNP4Sc_iA&t=1136s (Healh bar)
