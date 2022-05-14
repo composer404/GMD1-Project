@@ -1012,7 +1012,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: a1ecf398a31341848a037140eb558bc6, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.034
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -1124,6 +1124,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuItemHover: {fileID: 1858420783}
+  fire: {fileID: 0}
+  coin: {fileID: 0}
+  jump: {fileID: 0}
+  gameOver: {fileID: 0}
+  grunt: {fileID: 0}
+  sword: {fileID: 0}
+  heart: {fileID: 0}
+  walk: {fileID: 0}
+  sprint: {fileID: 0}
+  monster: {fileID: 0}
+  sneeze: {fileID: 0}
 --- !u!1 &1095344396
 GameObject:
   m_ObjectHideFlags: 0
