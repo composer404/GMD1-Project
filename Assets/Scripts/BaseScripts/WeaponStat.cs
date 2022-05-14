@@ -8,7 +8,7 @@ public class WeaponStat : MonoBehaviour
     [Range(1, 100)]
     private int damage = 5;
 
-    public int getDamage() {
+    public int GetDamage() {
         return damage;
     }
 }

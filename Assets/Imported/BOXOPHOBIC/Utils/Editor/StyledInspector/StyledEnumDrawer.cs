@@ -70,9 +70,6 @@ namespace Boxophobic.StyledGUI
 
             realIndex = EditorGUILayout.Popup(a.display, realIndex, enumOptions.ToArray());
 
-            //Debug Value
-            //EditorGUILayout.LabelField(enumIndices[realIndex].ToString());
-
             property.intValue = enumIndices[realIndex];
 
             GUILayout.Space(a.down);

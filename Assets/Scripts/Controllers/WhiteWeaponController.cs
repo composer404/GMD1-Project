@@ -35,7 +35,7 @@ public class WhiteWeaponController : Weapon
                 return;
             }
     
-            controller.GetDamage(weaponStat.getDamage());
+            controller.GetDamage(weaponStat.GetDamage());
         }
     }
 }
